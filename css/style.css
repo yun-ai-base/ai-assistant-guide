@@ -154,6 +154,10 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .cb-viz { margin-top: 16px; }
 .cb-viz svg { width: 100%; height: auto; }
 
+/* Insight body（模块四：复用概念讲解的卡片视觉） */
+.insight-body { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.insight-body .cb-def { margin-bottom: 18px; }
+
 /* Top GitHub Skills */
 .top-skills { margin-top: 26px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
 .top-skills h3 { font-size: 17px; margin-bottom: 6px; }
@@ -253,7 +257,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .search-input { min-width: 0; }
   /* 关键：覆盖 minmax(330/300px) 的最小宽度，杜绝横向溢出 */
   .model-grid, .agent-grid, .ts-grid { grid-template-columns: 1fr; }
-  .concept-body, .top-skills, .relation-block { padding: 16px; }
+  .concept-body, .top-skills, .relation-block, .insight-body { padding: 16px; }
   .cb-grid { gap: 16px; }
   .cb-title { font-size: 19px; }
   .mc-name, .ac-name { font-size: 16px; }
