@@ -2,6 +2,12 @@
  * AI 使用智能助理 · 学习向导 — 内容数据
  * 数据时间基准：2026 年中（综合 2026-06/07 多源实测与官方参数）
  * 版本号会随厂商迭代变化，本数据用于教学科普，实际选型以官方最新文档为准。
+ *
+ * 多维度字段说明（本轮深化）：
+ *   模型 MODELS   : forWhom 选型建议 / tip 使用心法 / stack 常搭配的 Agent·Skill
+ *   Agent AGENTS  : difficulty 上手难度 / forWhom 适合谁 / edge 差异化亮点 / stack 推荐搭配
+ *   概念 CONCEPTS : myth 常见误区 / try 上手小实验 / related 关联概念
+ *   Skill SKILLS  : trigger 怎么触发（触发词）
  */
 
 // ============ 模块一：中美主流 AI 模型 ============
@@ -19,6 +25,9 @@ const MODELS = [
     strengths: ["综合能力最均衡", "插件 / 生态最成熟", "多模态创作强", "复杂推理稳定"],
     weakness: ["中文创意与深层文化表达弱于国产", "API 价格偏高"],
     scene: "日常对话、复杂推理、多模态创作、通用场景",
+    forWhom: "几乎所有人的「默认主力」：日常办公、写作润色、多模态创作，不确定用哪个时先选它。",
+    tip: "复杂任务先让它「列大纲 / 给步骤」再执行，跑题率大降；追求质量时在设置里切到深度思考模式。",
+    stack: "搭配 ChatGPT Agent 跑网页 / 表单任务，配 PPTX·XLSX Skill 直接出办公文档。",
     price: "约 $1.25–5 / $10–30 每百万 token（依版本）",
     tag: "全能均衡"
   },
@@ -34,6 +43,9 @@ const MODELS = [
     strengths: ["编程能力断层领先（SWE-bench ~64–69%）", "Agent / 长程任务最强", "代码缺陷显著少于同类", "长文档与合规写作佳"],
     weakness: ["API 成本高", "中文深层文化理解弱于国产模型"],
     scene: "大型项目开发、长程 Agent 任务、代码审查",
+    forWhom: "开发者、工程师、长文档 / 合规写作人群——要把「编程」和「长程任务」做到极致就选它。",
+    tip: "给「角色 + 约束 + 验收标准」比给「请帮我写」效果好得多；超大代码库直接 @ 整个仓库。",
+    stack: "底层驱动 Claude Code / Cursor，配 MCP 接代码仓库与 CI 流水线。",
     price: "约 $5 / $25 每百万 token",
     tag: "编程之王"
   },
@@ -49,6 +61,9 @@ const MODELS = [
     strengths: ["科学推理全球顶尖", "原生多模态（图文/音视频）", "响应速度极快", "超长上下文检索"],
     weakness: ["细节偶尔出错", "本土化 / 中文语感偏弱"],
     scene: "科学计算、音视频理解、长文档检索、数据分析",
+    forWhom: "科研 / 数据 / 长文档检索用户，以及需要「看图听音」原生多模态的场景。",
+    tip: "超长上下文直接丢整本书 / 整份研报；Flash 版做高频低难任务性价比最高。",
+    stack: "配 NotebookLM 做资料消化，配 Webapp Testing Skill 做前端验证。",
     price: "约 $0.1–0.4 每百万 token（Flash 版更便宜）",
     tag: "多模态 / 科学"
   },
@@ -64,6 +79,9 @@ const MODELS = [
     strengths: ["实时接入 X 平台数据", "时事 / 社交舆情分析强", "风格直率"],
     weakness: ["通用中文场景非主战场", "国内访问受限"],
     scene: "实时资讯、社交分析、时事问答",
+    forWhom: "关注实时舆情、社媒、时事的人群，尤其是 X 平台重度用户。",
+    tip: "问「现在最新 / 实时」类问题最香；让它「引用来源」避免编造。",
+    stack: "配合 Perplexity 做交叉事实核查，互补引用质量。",
     price: "订阅制（含于 X Premium）",
     tag: "实时资讯"
   },
@@ -81,6 +99,9 @@ const MODELS = [
     strengths: ["数学推理顶尖（MATH-500 96.8%）", "开源、API 极低价", "SWE-bench 80.6%", "企业私有化友好"],
     weakness: ["多模态非最强项", "超长文档弱于 Kimi"],
     scene: "数理科研、数据分析、企业私有化部署、批量编程",
+    forWhom: "开发者、科研、企业私有化——预算敏感又想要强推理的人首选。",
+    tip: "数学 / 代码任务直接给条件即可，省 token；自部署用 vLLM / Ollama 几分钟起。",
+    stack: "是本地 OpenClaw / Hermes 的默认引擎，配 Codex 做云端并行。",
     price: "约 ¥1.5 / 千 token（开源可自部署）",
     tag: "开源性价比王"
   },
@@ -96,6 +117,9 @@ const MODELS = [
     strengths: ["国产第一梯队、全球评测前列", "智能体能力广度深度兼备", "超高性价比（海外 1/10）", "开源生态活跃"],
     weakness: ["极硬核编程略逊 Claude", "顶尖多模态弱于 Gemini"],
     scene: "智能体任务、编程、办公生产力、企业部署",
+    forWhom: "国产全能首选：智能体任务、编程、办公，想用开源又不想折腾的人。",
+    tip: "Agent 任务用 Qwen-Max，coding 用 Qwen-Coder；海外调用价格约 1/10。",
+    stack: "驱动 Qoder CN / Coze / Dify，配 MCP Builder 接业务系统。",
     price: "约 ¥2.5 / ¥7.5 每百万 token",
     tag: "国产全能"
   },
@@ -111,6 +135,9 @@ const MODELS = [
     strengths: ["多模态最强、C 端体验最佳", "中文口语化表达自然", "短视频 / 自媒体文案爆款适配高"],
     weakness: ["深度科研 / 硬核编程非主战场", "闭源不可私有化"],
     scene: "中文聊天、短视频脚本、小红书文案、多模态创作",
+    forWhom: "中文日常聊天、短视频 / 小红书文案、多模态创作、C 端小白用户。",
+    tip: "让它「模仿某博主语气」写文案很准；图片 / 视频生成直接说需求即可。",
+    stack: "配 Coze 搭内容 bot，配 Brand Guidelines Skill 统一视觉。",
     price: "国内免费 + 企业 API",
     tag: "中文 / 多模态"
   },
@@ -126,6 +153,9 @@ const MODELS = [
     strengths: ["国产最强逻辑 / 推理 / 代码之一", "中文理解独一档、公文营销地道", "编程得分全场前列", "开源友好"],
     weakness: ["生态规模小于头部大厂", "闭源版价格随能力上探"],
     scene: "复杂任务、科研、逻辑推理、中文创作",
+    forWhom: "中文深度创作、公文 / 营销、复杂逻辑与代码——要「中文最地道」的人。",
+    tip: "中文长文先给「结构 + 受众 + 禁忌」三要素；代码任务 @ 仓库后给验收点。",
+    stack: "驱动 Qoder CN，配 Internal Comms Skill 写周报 / 公告。",
     price: "约 $1.18 / 百万 token（开源可选）",
     tag: "中文推理"
   },
@@ -141,6 +171,9 @@ const MODELS = [
     strengths: ["超长文档处理强", "论文 / 长文阅读摘要佳", "长程记忆好"],
     weakness: ["通用编程非最强", "闭源"],
     scene: "长文档、论文研读、法律 / 研报分析",
+    forWhom: "长文档 / 论文 / 法律研报阅读摘要——一次要「吃」几十万字的人。",
+    tip: "直接上传 PDF 说「提取争议焦点 / 时间线」；超长对话开「长记忆」。",
+    stack: "配 PDF Processing Skill 做批量抽取，配 Perplexity 做引用核查。",
     price: "免费 + API",
     tag: "超长文档"
   },
@@ -156,6 +189,9 @@ const MODELS = [
     strengths: ["多模态与社交生态结合", "办公 / 内容场景落地快", "支持 MCP 连接"],
     weakness: ["通用排名非最前", "闭源"],
     scene: "社交、办公协作、内容生成、Agent 接入",
+    forWhom: "腾讯生态用户（微信 / 企微 / 腾讯文档），办公协作与内容生成。",
+    tip: "在元宝里直接 @ 腾讯文档 / 会议纪要；复杂任务让 WorkBuddy 调它。",
+    stack: "WorkBuddy 默认模型，配微信 / 企微连接器做消息流转。",
     price: "免费 + 企业 API",
     tag: "生态落地"
   },
@@ -171,6 +207,9 @@ const MODELS = [
     strengths: ["原生多模态（文本/图像/视频/音频）", "MSA 稀疏注意力，长上下文强、效率高", "前沿编程与 Agent 能力", "开源权重 + 海螺视频/语音生成", "Token 吞吐高、性价比好"],
     weakness: ["顶级闭源对标仍有差距", "生态规模小于头部大厂"],
     scene: "超长上下文、编程 Agent、多模态生成、企业 API",
+    forWhom: "超长上下文、编程 Agent、多模态（文 / 图 / 音 / 视频）生成、企业 API。",
+    tip: "长文档用 1M 窗口一次喂完；视频 / 语音走海螺，文本走 M3。",
+    stack: "配 MCP 接业务数据，配 Algorithmic Art Skill 出视觉。",
     price: "开源权重 + Plus 约 $20≈12.5B tokens/月",
     tag: "长上下文/多模态"
   },
@@ -186,6 +225,9 @@ const MODELS = [
     strengths: ["推理与 Agent/Coding 强（ClawEval 开源前列）", "原生全模态（文本/图像/视频/音频）", "Token 效率高（比同类省 40–50%）", "全量开源 MIT、可商用", "深度集成小爱同学/智能家居/座舱"],
     weakness: ["通用创意弱于头部", "闭源版能力上限待追"],
     scene: "智能设备端、编程 Agent、全模态交互、私有化部署",
+    forWhom: "智能设备 / 端侧场景、编程 Agent、全模态交互、想 MIT 全量商用的人。",
+    tip: "端侧用轻量版，云端用 Pro；和「小爱同学」联动做家居 / 座舱。",
+    stack: "小米生态内置，配 Codex / Claude Code 做复杂工程。",
     price: "开源 MIT + Token Plan（夜间折扣）",
     tag: "开源全模态/生态"
   }
@@ -206,7 +248,10 @@ const CONCEPTS = [
       "是一切 AI 交互的最基础入口",
       "Prompt Engineering 是『怎么写好指令』"
     ],
-    layer: "最底层：所有能力的起点"
+    layer: "最底层：所有能力的起点",
+    myth: "误区一：『Prompt 越短越酷』——其实越具体越有用；误区二：『AI 应该懂我』——它只懂你写出来的，没写的它只能猜。",
+    try: "复制这句对比效果：「你是有 10 年经验的运营。帮我写一条小红书标题，受众 25 岁女性，风格活泼，给 5 个选项并说明差异。」再对比你平时随便问的写法。",
+    related: "Skill（把好 Prompt 固化复用）、Agent（消费 Prompt 去执行任务）"
   },
   {
     id: "skill",
@@ -221,7 +266,10 @@ const CONCEPTS = [
       "与 Slash Command 不同：Skill 是自动触发匹配",
       "典型层：Prompt / 知识层（区别于 MCP 的集成层）"
     ],
-    layer: "包装层：把 Prompt 沉淀为可复用能力"
+    layer: "包装层：把 Prompt 沉淀为可复用能力",
+    myth: "误区：『Skill 会自己思考』——它只是把预设流程 / 知识『喂』给模型，真正的推理还是模型做；Skill 强在『不跑题、不漏步骤』。",
+    try: "在支持 Skill 的客户端说「用 Internal Comms 帮我写本周 3P 周报」，看它自动套模板、补结构。",
+    related: "Prompt（Skill 是 Prompt 的封装）、MCP（Skill 管方法论，MCP 管连接）"
   },
   {
     id: "agent",
@@ -236,7 +284,10 @@ const CONCEPTS = [
       "区别于 Copilot：Copilot 在 App 里给建议，Agent 直接接管执行",
       "2026 被称为『Agent 元年』，重心从『回答』转向『完成』"
     ],
-    layer: "执行层：干活的『工人』"
+    layer: "执行层：干活的『工人』",
+    myth: "误区一：『Agent 啥都能干』——它擅长边界清晰、可验证的任务；误区二：『Agent 不会出错』——关键决策仍需人审。",
+    try: "给 Manus / ChatGPT Agent 一个明确交付目标：「整理我 Gmail 里本周重要邮件，写成 3 条摘要发到 Slack」，观察它自主循环。",
+    related: "Prompt（任务入口）、Skill（方法论）、MCP（工具手）、Token（燃料）"
   },
   {
     id: "mcp",
@@ -251,7 +302,10 @@ const CONCEPTS = [
       "已捐赠给 Linux 基金会（Agentic AI Foundation），OpenAI/Google/Microsoft 均已支持",
       "代价：工具定义常驻上下文会吃 Token，需维护连接、注意安全风险"
     ],
-    layer: "集成层：工人手里的『万能工具接口』"
+    layer: "集成层：工人手里的『万能工具接口』",
+    myth: "误区一：『MCP 让 AI 变聪明』——它只解决『连得上』，聪明与否还是模型；误区二：『接了就安全』——需鉴权与最小权限。",
+    try: "在 Claude Desktop 里连一个文件系统 MCP，然后说「读我桌面那个 notes.txt 并总结」，看它直接操作本地文件。",
+    related: "Agent（调用方）、Token（连接定义常驻上下文窗口）"
   },
   {
     id: "token",
@@ -266,7 +320,10 @@ const CONCEPTS = [
       "一段对话塞太多内容超过窗口，AI 会『忘掉』最早说的",
       "MCP/Skill 的设计核心之一，就是管好这有限的上下文窗口"
     ],
-    layer: "燃料层：一切运行的底层计量单位"
+    layer: "燃料层：一切运行的底层计量单位",
+    myth: "误区一：『中文按字算 token』——其实是按子词拆分，不同模型规则不同；误区二：『token 越多越贵就一定越好』——要控上下文省成本。",
+    try: "把同一段话分别丢进中英模型，看『用量 / 价格』统计，直观理解上下文窗口与计费。",
+    related: "MCP / Skill（都吃上下文窗口）、模型（窗口大小决定能记多少）"
   }
 ];
 
@@ -288,6 +345,7 @@ const SKILLS_TOP = [
     one: "用 p5.js 生成可复现的算法艺术",
     features: ["种子随机、结果可复现", "实时参数调节与可视化", "流场 / 粒子系统等多种风格", "输出交互式 HTML 文件"],
     scene: "独特视觉作品、数据可视化背景、品牌视觉元素",
+    trigger: "说「用 Algorithmic Art 生成一张流场风格的壁纸，主色蓝紫」",
     url: "https://github.com/anthropics/skills/tree/main/skills/algorithmic-art"
   },
   {
@@ -295,6 +353,7 @@ const SKILLS_TOP = [
     one: "帮团队写专业、规范的内部沟通文档",
     features: ["3P 周报模板（Progress/Plans/Problems）", "公司公告与 FAQ", "项目更新与事故报告", "符合企业标准格式"],
     scene: "周报、领导简报、团队公告、事故复盘",
+    trigger: "说「用 Internal Comms 按 3P 模板写本周周报」",
     url: "https://github.com/anthropics/skills/tree/main/skills/internal-comms"
   },
   {
@@ -302,6 +361,7 @@ const SKILLS_TOP = [
     one: "前端界面设计最佳实践指南",
     features: ["响应式设计规范", "组件设计模式", "无障碍（A11y）指南", "现代 CSS 与动效技巧"],
     scene: "构建 Web 应用时确保界面美观且实用，告别「AI 味」设计",
+    trigger: "说「用 Frontend Design 给我这个登录页提改进建议并给代码」",
     url: "https://github.com/anthropics/skills/tree/main/skills/frontend-design"
   },
   {
@@ -309,6 +369,7 @@ const SKILLS_TOP = [
     one: "生成适配 Slack 的动图与自定义 emoji",
     features: ["适配尺寸（128/480px）", "内置平台合规校验", "丰富动画原语（shake/pulse/bounce…）", "智能文件体积优化"],
     scene: "为团队 Slack 频道做专属动图与表情",
+    trigger: "说「用 Slack GIF Creator 做个庆祝上线的动图」",
     url: "https://github.com/anthropics/skills/tree/main/skills/slack-gif-creator"
   },
   {
@@ -316,6 +377,7 @@ const SKILLS_TOP = [
     one: "PDF 文档处理的「瑞士军刀」",
     features: ["文本与表格提取", "创建 / 合并 / 拆分", "表单填写与处理", "水印与密码保护"],
     scene: "从 PDF 抽取数据做分析、批量处理合同文档",
+    trigger: "说「用 PDF 提取这份合同的关键条款做成表格」",
     url: "https://github.com/anthropics/skills/tree/main/skills/pdf"
   },
   {
@@ -323,6 +385,7 @@ const SKILLS_TOP = [
     one: "保持品牌视觉一致性",
     features: ["品牌色系统应用", "智能字体风格匹配", "系统字体自动回退", "形状与强调色循环"],
     scene: "品牌相关的 PPT、文档、视觉内容统一规范",
+    trigger: "说「用 Brand Guidelines 检查这页 PPT 是否符合我们品牌色」",
     url: "https://github.com/anthropics/skills/tree/main/skills/brand-guidelines"
   },
   {
@@ -330,6 +393,7 @@ const SKILLS_TOP = [
     one: "用 Playwright 做 Web 应用自动化测试",
     features: ["本地 Web 应用自动测试", "浏览器截图捕获", "查看控制台日志", "管理服务生命周期"],
     scene: "验证前端功能、调试 UI 行为、生成可靠测试脚本",
+    trigger: "说「用 Webapp Testing 帮我测这个本地站点登录流程」",
     url: "https://github.com/anthropics/skills/tree/main/skills/webapp-testing"
   },
   {
@@ -337,6 +401,7 @@ const SKILLS_TOP = [
     one: "创建 MCP Server 的专业指南（呼应上方 MCP 概念）",
     features: ["MCP 协议实践", "Server 脚手架", "Tools / Resources / Prompts 定义", "把外部工具接入 Agent"],
     scene: "给 Agent 接入自定义外部工具或数据源",
+    trigger: "说「用 MCP Builder 把我们的订单系统做成 MCP Server」",
     url: "https://github.com/anthropics/skills/tree/main/skills/mcp-builder"
   },
   {
@@ -344,6 +409,7 @@ const SKILLS_TOP = [
     one: "用自然语言处理 Excel 表格",
     features: ["人话写公式", "数据分析与制图", "表格增删改查", "批量报表生成"],
     scene: "财务报表、数据分析、批量表格处理",
+    trigger: "说「用 XLSX 把这堆销售数据按地区汇总并出图」",
     url: "https://github.com/anthropics/skills/tree/main/skills/xlsx"
   },
   {
@@ -351,6 +417,7 @@ const SKILLS_TOP = [
     one: "自然语言生成幻灯片",
     features: ["大纲一键转幻灯片", "版式规范", "内容润色", "图表与配图建议"],
     scene: "工作汇报、融资路演、培训材料",
+    trigger: "说「用 PPTX 把这份大纲做成 10 页融资路演」",
     url: "https://github.com/anthropics/skills/tree/main/skills/pptx"
   }
 ];
@@ -364,8 +431,12 @@ const AGENTS = [
     country: "cn",
     category: "general",
     badge: "通用云端 Agent",
+    difficulty: "中等",
     site: "https://manus.im",
     summary: "给定目标后自主规划多步任务，调用浏览器、代码编辑器与文件系统，端到端交付成品。",
+    forWhom: "想「雇个 AI 员工」做交付的个人 / 小团队，不愿自己拆步骤的人。",
+    edge: "端到端交付成品而非给建议，最接近「AI 员工」的通用 Agent。",
+    stack: "底层模型常切 Claude / GLM，配 PPTX·XLSX Skill 出办公文档。",
     tips: [
       "把任务说成一个『可交付的结果』而非问句：『做一个 SaaS 落地页』而非『落地页怎么写』",
       "复杂任务单次消耗 500–900 积分，先用免费额度（每日 300 积分）试小任务",
@@ -382,8 +453,12 @@ const AGENTS = [
     country: "us",
     category: "coding",
     badge: "终端编程 Agent",
+    difficulty: "进阶",
     site: "https://claude.ai/code",
     summary: "在终端直接读写整个代码库、跑测试、做 Git 操作，适合大型复杂工程任务。",
+    forWhom: "开发者、工程团队，要拿它跑真实代码库任务的人。",
+    edge: "终端原生、复杂代码库推理断层领先，是众多 IDE 的底层引擎。",
+    stack: "Claude 模型 + MCP + Agent Teams 多体协作。",
     tips: [
       "用自然语言下达工程指令：『找出并修复 checkout 流程的空指针异常』",
       "支持后台 Agent、多文件编辑、MCP 工具扩展",
@@ -400,8 +475,12 @@ const AGENTS = [
     country: "us",
     category: "coding",
     badge: "IDE 编程 Agent",
+    difficulty: "简单",
     site: "https://cursor.com",
     summary: "VS Code 原生的 AI IDE，Tab 补全 + 完整 Agent 工作流，企业采用率最高。",
+    forWhom: "所有写代码的程序员，尤其 IDE 重度用户。",
+    edge: "VS Code 原生、企业采用率最高、@ 引用让上下文超精准。",
+    stack: "Claude / GLM / DeepSeek 可换底层 + Background Agents 后台跑。",
     tips: [
       "用 @ 引用文件 / 文件夹，让 Agent 精准理解上下文",
       "Background Agents 可在后台跑长任务，前台继续写代码",
@@ -418,8 +497,12 @@ const AGENTS = [
     country: "cn",
     category: "platform",
     badge: "无代码 Agent 搭建平台",
+    difficulty: "简单",
     site: "https://www.coze.cn",
     summary: "可视化拖拽搭建智能体，内置插件、知识库与工作流，个人与企业都能用。",
+    forWhom: "零代码用户、运营 / 产品想快速搭 bot 的人。",
+    edge: "可视化拖拽、多渠道一键发布，门槛最低。",
+    stack: "字节生态 + 插件（底层多走 MCP）+ 知识库。",
     tips: [
       "从模板起步，先搭一个『客服 / 助手』bot 跑通流程",
       "用知识库喂私有文档，用插件扩能力（很多底层走 MCP）",
@@ -436,8 +519,12 @@ const AGENTS = [
     country: "cn",
     category: "platform",
     badge: "开源 Agent 工作流平台",
+    difficulty: "中等",
     site: "https://dify.ai",
     summary: "开源的可视化 LLMOps 平台，搭 Agent 工作流、RAG、模型路由，企业可自托管。",
+    forWhom: "开发者 / 企业，要私有化与 RAG 工作流的人。",
+    edge: "开源可自托管、数据不出域，生产级落地友好。",
+    stack: "多模型 + MCP + 知识库组合。",
     tips: [
       "用工作流编排多步骤任务，比纯提示词更可控",
       "自托管保障数据不出域，适合合规敏感业务",
@@ -454,8 +541,12 @@ const AGENTS = [
     country: "cn",
     category: "coding",
     badge: "智能体编程平台",
+    difficulty: "中等",
     site: "https://lingma.aliyun.com/",
     summary: "阿里云的 AI 智能体编程平台（2026-05-20 由「通义灵码」升级更名）：覆盖 IDE / 插件 / CLI / 云端，Quest 模式可把复杂研发任务自动拆解为步骤、端到端交付工程级成果。",
+    forWhom: "国内研发团队、对数据安全要求高的企业私有化研发。",
+    edge: "Quest 模式端到端交付 + 国产模型合规部署，Gartner 唯一入围中国厂商。",
+    stack: "GLM / DeepSeek / Kimi / MiniMax 可切 + 专家团子智能体协作。",
     tips: [
       "用 Quest 模式下达完整目标（如『实现并测试登录模块』），它自主规划 + 执行",
       "模型可切 GLM / DeepSeek / Kimi / MiniMax 等国产大模型，数据国内合规部署",
@@ -473,8 +564,12 @@ const AGENTS = [
     country: "us",
     category: "platform",
     badge: "多 Agent 协作框架",
+    difficulty: "进阶",
     site: "https://www.crewai.com",
     summary: "Python 框架，给 Agent 分配角色（研究员/写手/编辑），多体协作完成复杂任务。",
+    forWhom: "开发者，要多 Agent 角色化协作流水线的人。",
+    edge: "角色化多体协作，适合「一人分饰多角」会累的复杂流程。",
+    stack: "LangChain / MCP + 任意 LLM 可组合。",
     tips: [
       "先定义清晰角色与交接物，再让 Agent 组队",
       "适合『一人分饰多角』会累的复杂流程",
@@ -491,8 +586,12 @@ const AGENTS = [
     country: "other",
     category: "open",
     badge: "开源通用 Agent",
+    difficulty: "进阶",
     site: "https://github.com/Significant-Gravitas/AutoGPT",
     summary: "开源 Agent 鼻祖，给定目标后自主循环：规划→执行→评估→迭代。",
+    forWhom: "爱折腾的自托管玩家、想完全掌控流程的人。",
+    edge: "最成熟的开源鼻祖，自主循环范式开山之作。",
+    stack: "自托管 LLM + 市场预置 agent 快速起步。",
     tips: [
       "自托管只需小额 VPS，成本主要是底层 LLM API",
       "用可视化 Agent Builder / 市场预置 agent 快速起步",
@@ -509,8 +608,12 @@ const AGENTS = [
     country: "us",
     category: "research",
     badge: "研究 Agent",
+    difficulty: "简单",
     site: "https://www.perplexity.ai",
     summary: "从 AI 搜索进化为 Agent 平台，带可验证引用的研究与『Computer』浏览器操作。",
+    forWhom: "做研究 / 竞品 / 学术、要可引用来源的人。",
+    edge: "引用质量一流、带 Computer 浏览器多步操作。",
+    stack: "o3-pro / Claude 每步自动选模 + 多源交叉。",
     tips: [
       "做深度研究时要求『给出可点击来源』，质量最高",
       "Perplexity Computer 可多步浏览网页、用软件",
@@ -527,8 +630,12 @@ const AGENTS = [
     country: "other",
     category: "open",
     badge: "开源个人 AI 助理",
+    difficulty: "进阶",
     site: "",
     summary: "可自托管的个人 Agent，连接 25+ 消息频道，语音唤醒 + 实时画布，原生接 Claude。",
+    forWhom: "想完全掌控数据、会自托管的极客。",
+    edge: "25+ 频道、完全数据所有权、可换任意 LLM 后端。",
+    stack: "任意 LLM + 飞书 / 钉钉 / 微信连接器。",
     tips: [
       "自托管获得『完全数据所有权』，无供应商锁定",
       "接入飞书 / 钉钉 / 微信等频道，一句话就干活",
@@ -545,8 +652,12 @@ const AGENTS = [
     country: "other",
     category: "open",
     badge: "自进化开源 Agent",
+    difficulty: "进阶",
     site: "",
     summary: "Nous Research 于 2026-02 推出的开源自主 Agent 框架，因英文名撞奢侈品被国内开发者戏称「爱马仕」。最大特点是『自我进化』：从任务中自动提炼、迭代技能卡，跨平台记忆（微信 / QQ / 飞书互通）。",
+    forWhom: "想『养马』、让 Agent 自己从任务里长能力的人。",
+    edge: "从任务中自生成技能卡、跨平台记忆，『会动脑的学徒』。",
+    stack: "微信 / QQ / 飞书 + 自写运行时架构。",
     tips: [
       "给目标即可，它自己写 Skill、自己装工具，越用越聪明（俗称『养马』）",
       "支持一键接入微信 / QQ / 飞书，手机端可经 Termux 离线常驻",
@@ -564,8 +675,12 @@ const AGENTS = [
     country: "us",
     category: "platform",
     badge: "企业 Agent 平台",
+    difficulty: "中等",
     site: "https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio",
     summary: "在 Microsoft 365 内无代码搭建自定义 Agent，活在 Teams/Outlook/Excel 里。",
+    forWhom: "已用 M365 的企业 / 团队，不想离开生态的人。",
+    edge: "活在 Teams/Outlook/Excel 里、企业合规与集成强。",
+    stack: "Power Platform + M365 生态打通。",
     tips: [
       "已用 M365 的团队首选，无需离开生态",
       "搭『监控邮箱 / 纪要 / 路由工单 / 周报』类 agent",
@@ -582,8 +697,12 @@ const AGENTS = [
     country: "us",
     category: "general",
     badge: "浏览器任务 Agent",
+    difficulty: "简单",
     site: "https://chatgpt.com",
     summary: "接管浏览器做自主任务：填表、下单、安排行程，随时可由用户接管。",
+    forWhom: "普通用户，要 AI 代填表 / 下单 / 安排行程的人。",
+    edge: "视觉-动作循环操作网页，复杂表单也能填，随时手动接管。",
+    stack: "ChatGPT 原生模型 + 浏览器。",
     tips: [
       "用『视觉-动作循环』操作网页，复杂表单也能填",
       "给每个网站写自定义指示，提升准确率",
@@ -600,8 +719,12 @@ const AGENTS = [
     country: "cn",
     category: "general",
     badge: "全场景 AI 桌面助理",
+    difficulty: "中等",
     site: "https://www.codebuddy.cn/work/",
     summary: "腾讯出品的「全场景 AI 桌面助理」（被戏称『腾讯版 OpenClaw』）：既能聊天问答，也能直接读改写本地文件、连微信 / 企微 / 飞书 / 钉钉，内置 20+ 技能与 MCP，默认腾讯混元并兼容 DeepSeek / GLM / Kimi / MiniMax 等国产模型。",
+    forWhom: "国内个人 / 企业，要『住进电脑的助理』、打通本地与多平台的人。",
+    edge: "本地文件读写 + 多连接器 + 模型无关，国产全场景 Agent 代表。",
+    stack: "混元 / DeepSeek / GLM 可换 + 20+ Skill + MCP。",
     tips: [
       "把它当『住在你电脑里的助理』：直接让它整理桌面、批量改文件、写脚本",
       "用技能（Skill）与连接器把微信 / 企微 / 飞书 / 钉钉接进来，消息自动流转",
@@ -619,8 +742,12 @@ const AGENTS = [
     country: "us",
     category: "coding",
     badge: "云端自主编程 Agent",
+    difficulty: "进阶",
     site: "https://openai.com/codex/",
     summary: "OpenAI 的云端自主编程 Agent（同时开源 Rust CLI）：在隔离沙箱里并行跑任务——写代码、跑测试、提 PR、做代码审查，由 GPT-5-Codex 驱动。",
+    forWhom: "开发者，要云端并行跑工程任务、不想占本地资源的人。",
+    edge: "隔离沙箱并行执行、直接开 PR / 做审查，与 Claude Code 形成云 vs 本地对照。",
+    stack: "GPT-5-Codex + GitHub 深度集成。",
     tips: [
       "在网页 / CLI / IDE 插件里给它一个清晰工单，它并行开工",
       "适合『边界清晰』的工程任务：修复 bug、写测试、迁移代码",
