@@ -288,70 +288,70 @@ const SKILLS_TOP = [
     one: "用 p5.js 生成可复现的算法艺术",
     features: ["种子随机、结果可复现", "实时参数调节与可视化", "流场 / 粒子系统等多种风格", "输出交互式 HTML 文件"],
     scene: "独特视觉作品、数据可视化背景、品牌视觉元素",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/algorithmic-art"
   },
   {
     rank: 2, name: "Internal Comms", stars: "47.1k", cat: "团队协作 / 职场写作",
     one: "帮团队写专业、规范的内部沟通文档",
     features: ["3P 周报模板（Progress/Plans/Problems）", "公司公告与 FAQ", "项目更新与事故报告", "符合企业标准格式"],
     scene: "周报、领导简报、团队公告、事故复盘",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/internal-comms"
   },
   {
     rank: 3, name: "Frontend Design", stars: "43.7k", cat: "前端 / UI·UX",
     one: "前端界面设计最佳实践指南",
     features: ["响应式设计规范", "组件设计模式", "无障碍（A11y）指南", "现代 CSS 与动效技巧"],
     scene: "构建 Web 应用时确保界面美观且实用，告别「AI 味」设计",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/frontend-design"
   },
   {
     rank: 4, name: "Slack GIF Creator", stars: "42.8k", cat: "沟通 / 趣味",
     one: "生成适配 Slack 的动图与自定义 emoji",
     features: ["适配尺寸（128/480px）", "内置平台合规校验", "丰富动画原语（shake/pulse/bounce…）", "智能文件体积优化"],
     scene: "为团队 Slack 频道做专属动图与表情",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/slack-gif-creator"
   },
   {
     rank: 5, name: "PDF Processing", stars: "40.5k", cat: "文档处理",
     one: "PDF 文档处理的「瑞士军刀」",
     features: ["文本与表格提取", "创建 / 合并 / 拆分", "表单填写与处理", "水印与密码保护"],
     scene: "从 PDF 抽取数据做分析、批量处理合同文档",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/pdf"
   },
   {
     rank: 6, name: "Brand Guidelines", stars: "37.8k", cat: "品牌 / 设计",
     one: "保持品牌视觉一致性",
     features: ["品牌色系统应用", "智能字体风格匹配", "系统字体自动回退", "形状与强调色循环"],
     scene: "品牌相关的 PPT、文档、视觉内容统一规范",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/brand-guidelines"
   },
   {
     rank: 7, name: "Webapp Testing", stars: "35.4k", cat: "开发 / 测试",
     one: "用 Playwright 做 Web 应用自动化测试",
     features: ["本地 Web 应用自动测试", "浏览器截图捕获", "查看控制台日志", "管理服务生命周期"],
     scene: "验证前端功能、调试 UI 行为、生成可靠测试脚本",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/webapp-testing"
   },
   {
     rank: 8, name: "MCP Builder", stars: "34.4k", cat: "开发 / 集成",
     one: "创建 MCP Server 的专业指南（呼应上方 MCP 概念）",
     features: ["MCP 协议实践", "Server 脚手架", "Tools / Resources / Prompts 定义", "把外部工具接入 Agent"],
     scene: "给 Agent 接入自定义外部工具或数据源",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/mcp-builder"
   },
   {
     rank: 9, name: "XLSX（Excel）", stars: "32.9k", cat: "办公 / 数据",
     one: "用自然语言处理 Excel 表格",
     features: ["人话写公式", "数据分析与制图", "表格增删改查", "批量报表生成"],
     scene: "财务报表、数据分析、批量表格处理",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/xlsx"
   },
   {
     rank: 10, name: "PPTX（PowerPoint）", stars: "32.9k", cat: "办公 / 演示",
     one: "自然语言生成幻灯片",
     features: ["大纲一键转幻灯片", "版式规范", "内容润色", "图表与配图建议"],
     scene: "工作汇报、融资路演、培训材料",
-    url: "https://github.com/anthropics/skills"
+    url: "https://github.com/anthropics/skills/tree/main/skills/pptx"
   }
 ];
 
