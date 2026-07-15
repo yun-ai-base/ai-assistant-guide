@@ -647,7 +647,7 @@
       box.innerHTML = `<p class="calc-sum">估算约 <b>${tokens.toLocaleString()}</b> tokens（中文≈1.6 字/token，仅估算）</p>
         <div class="matrix-wrap"><table class="matrix"><thead><tr><th>模型</th><th>估算单次成本</th></tr></thead>
         <tbody>${rows.map(r => `<tr><td class="m-name">${r.name}</td><td>${r.free ? "免费" : "$" + r.cost.toFixed(4)}</td></tr>`).join("")}</tbody></table></div>
-        <p class="tool-note">价格为横向比较用的估算单价（≈USD/百万 token），国产模型官方常更低或免费，真实计费以厂商为准。</p>`;
+        <p class="tool-note">价格为横向比较用的估算单价（输入/输出混合，≈USD/百万 token），国产模型官方常更低或免费，真实计费以厂商为准。</p>`;
     });
     // 模型对比排序
     const table = toolkitBodyEl.querySelector("#matrix-table");
