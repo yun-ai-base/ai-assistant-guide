@@ -9,7 +9,9 @@
     models: document.getElementById("panel-models"),
     concepts: document.getElementById("panel-concepts"),
     agents: document.getElementById("panel-agents"),
-    insights: document.getElementById("panel-insights")
+    insights: document.getElementById("panel-insights"),
+    toolkit: document.getElementById("panel-toolkit"),
+    extensions: document.getElementById("panel-extensions")
   };
   let currentTab = "overview";
   function switchTab(tab) {
@@ -391,22 +393,54 @@
        <span class="ico">${c.icon}</span>${c.name.split("（")[0]}
      </button>`).join("");
 
-  function renderInsight() {
-    const c = INSIGHTS.find(x => x.id === activeInsight);
-    insTabsEl.querySelectorAll(".ctab").forEach(b => b.classList.toggle("active", b.dataset.id === activeInsight));
-    const secHtml = c.sections.map(s => {
-      if (s.list) {
-        return `<div class="cb-block"><h4>${s.h}</h4><ul class="cb-points">${s.list.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
-      }
+  // 共享：把洞察类条目（INSIGHTS / EXTENSIONS）渲染成统一版式，支持 compare/flow/timeline/persona 特殊样式
+  function renderInsightBody(bodyEl, c) {
+    let extra = "";
+    if (c.kind === "compare" && c.compare) {
+      extra = `<div class="cmp-table"><table>
+        <thead><tr>${c.compare.headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+        <tbody>${c.compare.rows.map(r => `<tr><th class="cmp-k">${r.k}</th>${r.v.map(x => `<td>${x}</td>`).join("")}</tr>`).join("")}</tbody>
+      </table></div>`;
+    } else if (c.kind === "flow") {
+      const nodes = [
+        ["🧑", "你（定目标）", "最外层 Prompt"],
+        ["🤖", "Agent（执行）", "规划 + 动手 + 交付"],
+        ["📘", "Skill（方法论）", "固化复用流程"],
+        ["🔌", "MCP（连接）", "连外部工具 / 数据"],
+        ["🧠", "模型（推理）", "靠 Token 逐个预测"],
+        ["🔢", "Token（燃料）", "上下文窗口 + 计费"],
+        ["✅", "结果（交付）", "完成的工作"]
+      ];
+      extra = `<div class="e2e">${nodes.map((n, i) => `
+        <div class="e2e-node">
+          <div class="e2e-ico">${n[0]}</div>
+          <div class="e2e-txt"><div class="e2e-name">${n[1]}</div><div class="e2e-sub">${n[2]}</div></div>
+        </div>${i < nodes.length - 1 ? `<div class="e2e-arrow">↓</div>` : ""}`).join("")}</div>`;
+    } else if (c.kind === "timeline" && c.timeline) {
+      extra = `<div class="tl">${c.timeline.map(t => `
+        <div class="tl-item"><div class="tl-y">${t.y}</div><div class="tl-card"><div class="tl-t">${t.t}</div><div class="tl-d">${t.d}</div></div></div>`).join("")}</div>`;
+    } else if (c.kind === "persona" && c.personas) {
+      extra = `<div class="ps-grid">${c.personas.map(p => {
+        const m = MODELS.find(x => x.id === p.id);
+        return `<div class="ps-card ${m && m.country === "cn" ? "cn" : ""}">
+          <div class="ps-top"><div class="ps-name">${m ? m.name : p.id}</div>${m ? `<span class="flag ${m.country}">${m.country === "us" ? "🇺🇸" : "🇨🇳"}</span>` : ""}</div>
+          <div class="ps-style">${p.style}</div>
+          <div class="ps-say">${p.say}</div>
+        </div>`;
+      }).join("")}</div>`;
+    }
+    const secHtml = (c.sections || []).map(s => {
+      if (s.list) return `<div class="cb-block"><h4>${s.h}</h4><ul class="cb-points">${s.list.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
       return `<div class="cb-block"><h4>${s.h}</h4><p>${s.p}</p></div>`;
     }).join("");
-    insBodyEl.innerHTML = `
+    bodyEl.innerHTML = `
       <div class="cb-grid">
         <div>
           <div class="cb-title">${c.icon} ${c.name}</div>
           <div class="cb-oneliner">${c.oneLiner}</div>
           <div class="cb-def">${c.def}</div>
           ${secHtml}
+          ${extra}
           <div class="cb-block related"><h4>🔗 关联模块</h4><p class="cb-rel">${c.related}</p></div>
         </div>
         <aside class="cb-aside">
@@ -416,11 +450,242 @@
         </aside>
       </div>`;
   }
+
+  function renderInsight() {
+    const c = INSIGHTS.find(x => x.id === activeInsight);
+    insTabsEl.querySelectorAll(".ctab").forEach(b => b.classList.toggle("active", b.dataset.id === activeInsight));
+    renderInsightBody(insBodyEl, c);
+  }
   insTabsEl.addEventListener("click", e => {
     const b = e.target.closest(".ctab"); if (!b) return;
     activeInsight = b.dataset.id; renderInsight();
   });
   renderInsight();
+
+  /* ===================== 模块四-B：进阶延展（11 个内容模块） ===================== */
+  const extTabsEl = document.getElementById("ext-tabs");
+  const extBodyEl = document.getElementById("ext-body");
+  let activeExt = EXTENSIONS[0].id;
+  extTabsEl.innerHTML = EXTENSIONS.map(c =>
+    `<button class="ctab ${c.id === activeExt ? "active" : ""}" data-id="${c.id}">
+       <span class="ico">${c.icon}</span>${c.name.split("（")[0]}
+     </button>`).join("");
+  function renderExt() {
+    const c = EXTENSIONS.find(x => x.id === activeExt);
+    extTabsEl.querySelectorAll(".ctab").forEach(b => b.classList.toggle("active", b.dataset.id === activeExt));
+    renderInsightBody(extBodyEl, c);
+  }
+  extTabsEl.addEventListener("click", e => {
+    const b = e.target.closest(".ctab"); if (!b) return;
+    activeExt = b.dataset.id; renderExt();
+  });
+  renderExt();
+
+  /* ===================== 模块五：工具箱（5 个交互工具） ===================== */
+  const toolkitTabsEl = document.getElementById("toolkit-tabs");
+  const toolkitBodyEl = document.getElementById("toolkit-body");
+  const TOOL_LIST = [
+    { id: "selector", icon: "🧭", name: "选型决策器" },
+    { id: "calc", icon: "🧮", name: "成本计算器" },
+    { id: "matrix", icon: "📋", name: "模型对比" },
+    { id: "prompts", icon: "💡", name: "提示词库" },
+    { id: "roadmap", icon: "🗺️", name: "学习路线" }
+  ];
+  let activeTool = "selector";
+  let selState = {};
+  let matrixData = [];
+  toolkitTabsEl.innerHTML = TOOL_LIST.map(t =>
+    `<button class="ctab ${t.id === activeTool ? "active" : ""}" data-id="${t.id}">
+       <span class="ico">${t.icon}</span>${t.name}
+     </button>`).join("");
+
+  function selectorHtml() {
+    return `<div class="tool-card">
+      <p class="tool-intro">回答 4 个问题，给你一套「模型 + Agent + Skill」组合建议。</p>
+      ${TOOLS.selector.steps.map(s => `
+        <div class="sel-step" data-step="${s.id}">
+          <div class="sel-q">${s.q}</div>
+          <div class="sel-opts">
+            ${s.opts.map(o => `<button type="button" class="sel-opt" data-tag="${o.tag}">${o.t}</button>`).join("")}
+          </div>
+        </div>`).join("")}
+      <button type="button" class="tool-btn" id="sel-go">生成推荐方案 →</button>
+      <div class="sel-result" id="sel-result"></div>
+    </div>`;
+  }
+
+  function computeRec(a) {
+    if (!a.task || !a.budget || !a.code || !a.data) return null;
+    const models = [], agents = [], skills = [];
+    if (a.task === "content") { models.push("豆包", "GLM"); agents.push("Coze"); skills.push("Brand Guidelines", "PPTX"); }
+    else if (a.task === "code") { models.push("Claude", "DeepSeek"); agents.push("Cursor", "Claude Code"); skills.push("MCP Builder", "Webapp Testing"); }
+    else if (a.task === "research") { models.push("Perplexity", "Kimi"); agents.push("Perplexity"); skills.push("PDF Processing"); }
+    else if (a.task === "office") { models.push("WorkBuddy", "GLM"); agents.push("WorkBuddy", "Coze"); skills.push("XLSX", "PPTX", "Internal Comms"); }
+    else { models.push("GPT", "通义千问"); agents.push("Manus"); skills.push("PPTX", "XLSX"); }
+    if (a.budget === "free") { models.length = 0; models.push("DeepSeek", "Qwen", "GLM"); }
+    else if (a.budget === "cheap") { models.push("DeepSeek", "Qwen"); }
+    else { models.push("Claude", "GPT", "Gemini"); }
+    if (a.code === "nocode") { agents.length = 0; agents.push("Coze", "WorkBuddy", "Manus"); }
+    else if (a.code === "some") { agents.push("Cursor", "Qoder CN"); }
+    else { agents.push("Claude Code", "Codex", "Cursor"); }
+    if (a.data === "private") { models.push("DeepSeek(自部署)", "Qwen(自部署)"); agents.push("Dify", "Qoder CN", "OpenClaw"); }
+    else { agents.push("ChatGPT Agent"); }
+    const uniq = arr => [...new Set(arr)];
+    return { models: uniq(models), agents: uniq(agents), skills: uniq(skills) };
+  }
+
+  function calcHtml() {
+    return `<div class="tool-card">
+      <p class="tool-intro">粘贴一段文字，估算各模型消耗的 Token 与（估算）成本。仅供参考，真实计费以厂商为准。</p>
+      <textarea id="calc-text" class="calc-area" rows="5" placeholder="把要发给 AI 的文字粘这里，例如一段周报 / 一篇文案…"></textarea>
+      <button type="button" class="tool-btn" id="calc-go">估算 →</button>
+      <div class="calc-result" id="calc-result"></div>
+    </div>`;
+  }
+
+  function matrixHtml() {
+    matrixData = MODELS.map(m => ({
+      name: m.name,
+      country: m.country === "cn" ? "🇨🇳中国" : "🇺🇸美国",
+      open: m.type === "open" ? "开源" : "闭源",
+      ctx: m.context,
+      cnCap: m.country === "cn" ? "强" : "中/英",
+      multi: /多模态|视觉|图像|视频|音/.test(m.tag + m.strengths.join("")) ? "✅" : "—",
+      price: m.price
+    }));
+    return `<div class="tool-card">
+      <p class="tool-intro">12 个模型的横向对比。点表头可排序（国家 / 类型 / 中文 / 多模态）。</p>
+      <div class="matrix-wrap">
+      <table class="matrix" id="matrix-table">
+        <thead><tr>
+          <th data-k="name">模型</th><th data-k="country">国家</th><th data-k="open">类型</th>
+          <th data-k="ctx">上下文</th><th data-k="cnCap">中文</th><th data-k="multi">多模态</th><th>价格</th>
+        </tr></thead>
+        <tbody>${matrixData.map(r => `<tr>
+          <td class="m-name">${r.name}</td><td>${r.country}</td><td>${r.open}</td>
+          <td>${r.ctx}</td><td>${r.cnCap}</td><td>${r.multi}</td><td class="m-price">${r.price}</td>
+        </tr>`).join("")}</tbody>
+      </table>
+      </div>
+    </div>`;
+  }
+
+  function promptsHtml() {
+    return `<div class="tool-card">
+      <p class="tool-intro">按场景分类的可复制 Prompt，点「复制」直接拿走用。</p>
+      ${TOOLS.prompts.map(cat => `
+        <div class="pc-cat"><h4>${cat.cat}</h4>
+          <div class="pc-grid">
+            ${cat.items.map(it => `
+              <div class="pc-card">
+                <div class="pc-title">${it.title}</div>
+                <div class="pc-text">${it.text}</div>
+                <button type="button" class="pc-copy" data-text="${encodeURIComponent(it.text)}">📋 复制</button>
+              </div>`).join("")}
+          </div>
+        </div>`).join("")}
+    </div>`;
+  }
+
+  function roadmapHtml() {
+    const gotos = ["models", "agents", "insights", "extensions"];
+    return `<div class="tool-card">
+      <p class="tool-intro">从新手到专家的四级路线，每级给可做的动作，点卡片底部可跳对应模块。</p>
+      <div class="rm">
+        ${TOOLS.roadmap.map((r, i) => `
+          <div class="rm-item">
+            <div class="rm-stage">${r.stage}</div>
+            <div class="rm-desc">${r.desc}</div>
+            <ul class="rm-tips">${r.tips.map(t => `<li>${t}</li>`).join("")}</ul>
+            <button type="button" class="rm-go" data-goto="${gotos[i] || "overview"}">${r.go}</button>
+          </div>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  function renderToolkit() {
+    toolkitTabsEl.querySelectorAll(".ctab").forEach(b => b.classList.toggle("active", b.dataset.id === activeTool));
+    if (activeTool === "selector") toolkitBodyEl.innerHTML = selectorHtml();
+    else if (activeTool === "calc") toolkitBodyEl.innerHTML = calcHtml();
+    else if (activeTool === "matrix") toolkitBodyEl.innerHTML = matrixHtml();
+    else if (activeTool === "prompts") toolkitBodyEl.innerHTML = promptsHtml();
+    else if (activeTool === "roadmap") toolkitBodyEl.innerHTML = roadmapHtml();
+    bindTool();
+  }
+
+  function bindTool() {
+    // 选型决策器
+    toolkitBodyEl.querySelectorAll(".sel-opt").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const step = btn.closest(".sel-step");
+        step.querySelectorAll(".sel-opt").forEach(x => x.classList.remove("on"));
+        btn.classList.add("on");
+        selState[step.dataset.step] = btn.dataset.tag;
+      });
+    });
+    const selGo = toolkitBodyEl.querySelector("#sel-go");
+    if (selGo) selGo.addEventListener("click", () => {
+      const rec = computeRec(selState);
+      const box = toolkitBodyEl.querySelector("#sel-result");
+      if (!rec) { box.innerHTML = `<p class="tool-note">请先回答全部 4 个问题 🙏</p>`; return; }
+      box.innerHTML = `<div class="rec-block">
+        <div class="rec-row"><span class="rec-k">🤖 推荐模型</span>${rec.models.map(x => `<span class="rec-chip">${x}</span>`).join("")}</div>
+        <div class="rec-row"><span class="rec-k">🛠 推荐 Agent</span>${rec.agents.map(x => `<span class="rec-chip">${x}</span>`).join("")}</div>
+        <div class="rec-row"><span class="rec-k">📘 推荐 Skill</span>${rec.skills.map(x => `<span class="rec-chip">${x}</span>`).join("")}</div>
+        <p class="rec-tip">以上为基于你的选择做的通用推荐，具体选型以官方最新文档与你的实测为准。</p>
+      </div>`;
+    });
+    // 成本计算器
+    const calcGo = toolkitBodyEl.querySelector("#calc-go");
+    if (calcGo) calcGo.addEventListener("click", () => {
+      const text = toolkitBodyEl.querySelector("#calc-text").value;
+      const box = toolkitBodyEl.querySelector("#calc-result");
+      if (!text.trim()) { box.innerHTML = `<p class="tool-note">先粘点文字进来～</p>`; return; }
+      const tokens = Math.max(1, Math.round(text.length / 1.6));
+      const rows = TOOLS.pricing.map(p => ({ name: p.name, cost: tokens / 1e6 * p.perM, free: p.perM === 0 }))
+        .sort((a, b) => a.cost - b.cost);
+      box.innerHTML = `<p class="calc-sum">估算约 <b>${tokens.toLocaleString()}</b> tokens（中文≈1.6 字/token，仅估算）</p>
+        <div class="matrix-wrap"><table class="matrix"><thead><tr><th>模型</th><th>估算单次成本</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td class="m-name">${r.name}</td><td>${r.free ? "免费" : "$" + r.cost.toFixed(4)}</td></tr>`).join("")}</tbody></table></div>
+        <p class="tool-note">价格为横向比较用的估算单价（≈USD/百万 token），国产模型官方常更低或免费，真实计费以厂商为准。</p>`;
+    });
+    // 模型对比排序
+    const table = toolkitBodyEl.querySelector("#matrix-table");
+    if (table) table.querySelectorAll("th[data-k]").forEach(th => {
+      th.addEventListener("click", () => {
+        const k = th.dataset.k;
+        const sorted = [...matrixData].sort((a, b) => ("" + a[k]).localeCompare("" + b[k], "zh"));
+        table.querySelector("tbody").innerHTML = sorted.map(r => `<tr>
+          <td class="m-name">${r.name}</td><td>${r.country}</td><td>${r.open}</td>
+          <td>${r.ctx}</td><td>${r.cnCap}</td><td>${r.multi}</td><td class="m-price">${r.price}</td>
+        </tr>`).join("");
+      });
+    });
+    // 提示词复制
+    toolkitBodyEl.querySelectorAll(".pc-copy").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const txt = decodeURIComponent(btn.dataset.text);
+        const done = () => { btn.textContent = "✅ 已复制"; setTimeout(() => (btn.textContent = "📋 复制"), 1400); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done).catch(() => fallbackCopy(txt, done));
+        else fallbackCopy(txt, done);
+      });
+    });
+    // 路线图跳转
+    toolkitBodyEl.querySelectorAll(".rm-go").forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.goto));
+    });
+  }
+  function fallbackCopy(txt, done) {
+    const ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  toolkitTabsEl.addEventListener("click", e => {
+    const b = e.target.closest(".ctab"); if (!b) return;
+    activeTool = b.dataset.id; renderToolkit();
+  });
+  renderToolkit();
 
   // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents / #insights）
   applyHash();
