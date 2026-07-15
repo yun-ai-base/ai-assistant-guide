@@ -210,3 +210,29 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .cb-grid, .relation-wrap { grid-template-columns: 1fr; }
   .search-input { margin-left: 0; width: 100%; }
 }
+
+/* 小屏手机（≤600px）：强制单列、收紧间距，避免窄屏横向溢出 */
+@media (max-width: 600px) {
+  main { padding: 16px 14px 48px; }
+  .site-header { padding: 10px 14px; gap: 8px; }
+  .brand h1 { font-size: 16px; }
+  .subtitle { font-size: 11px; }
+  .logo { font-size: 28px; }
+  .topnav { gap: 6px; }
+  .navbtn { padding: 6px 12px; font-size: 12.5px; }
+  .sec-head h2 { font-size: 20px; }
+  .hero { padding: 20px; }
+  .hero h2 { font-size: 22px; }
+  .hero-cards { gap: 12px; }
+  .filters { gap: 10px; }
+  .fbtn { padding: 6px 12px; }
+  .search-input { min-width: 0; }
+  /* 关键：覆盖 minmax(330/300px) 的最小宽度，杜绝横向溢出 */
+  .model-grid, .agent-grid, .ts-grid { grid-template-columns: 1fr; }
+  .concept-body, .top-skills, .relation-block { padding: 16px; }
+  .cb-grid { gap: 16px; }
+  .cb-title { font-size: 19px; }
+  .mc-name, .ac-name { font-size: 16px; }
+  .relation-wrap { gap: 16px; }
+  .ts-head { flex-wrap: wrap; }
+}
