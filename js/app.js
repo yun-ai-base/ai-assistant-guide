@@ -93,6 +93,18 @@
             <h5>🎯 适用场景</h5>
             <div class="mc-meta">${m.scene}</div>
           </div>
+          <div class="mc-section">
+            <h5>👤 选型建议</h5>
+            <div class="mc-meta">${m.forWhom}</div>
+          </div>
+          <div class="mc-section">
+            <h5>💡 使用心法</h5>
+            <div class="mc-meta">${m.tip}</div>
+          </div>
+          <div class="mc-section">
+            <h5>🔗 常搭配</h5>
+            <div class="mc-meta">${m.stack}</div>
+          </div>
           <div class="mc-price"><b>价格：</b>${m.price}</div>
           <a class="mc-site" href="${site}" target="_blank" rel="noopener">🌐 前往官网 →${m.country === "cn" ? "（或点击卡片）" : ""}</a>
         </article>`;
@@ -192,6 +204,15 @@
           <div class="cb-block"><h4>📌 关键要点</h4>
             <ul class="cb-points">${c.points.map(p => `<li>${p}</li>`).join("")}</ul>
           </div>
+          <div class="cb-block myth"><h4>🚫 常见误区</h4>
+            <p class="cb-myth">${c.myth}</p>
+          </div>
+          <div class="cb-block try"><h4>🧪 上手小实验</h4>
+            <p class="cb-try">${c.try}</p>
+          </div>
+          <div class="cb-block related"><h4>🔗 关联概念</h4>
+            <p class="cb-rel">${c.related}</p>
+          </div>
         </div>
         <aside class="cb-aside">
           <div class="layer">${c.layer}</div>
@@ -224,6 +245,7 @@
               <div class="ts-one">${s.one}</div>
               <ul class="ts-feat">${s.features.map(f => `<li>${f}</li>`).join("")}</ul>
               <div class="ts-scene">🎯 ${s.scene}</div>
+              <div class="ts-trigger">💬 ${s.trigger}</div>
               <a class="ts-link" href="${s.url}" target="_blank" rel="noopener">GitHub 查看 →</a>
             </div>`).join("")}
         </div>
@@ -311,7 +333,10 @@
               <div class="ac-name">${a.name}</div>
               <div class="ac-vendor">${a.vendor}</div>
             </div>
-            <span class="ac-badge">${a.badge}</span>
+            <div class="ac-badges">
+              <span class="ac-badge">${a.badge}</span>
+              <span class="ac-diff" data-level="${a.difficulty}">上手 · ${a.difficulty}</span>
+            </div>
           </div>
           <div class="ac-summary">${a.summary}</div>
           <div class="ac-scenes">${a.scenes.map(s => `<span class="ac-scene">${s}</span>`).join("")}</div>
@@ -321,6 +346,12 @@
             <ul>${a.tips.map(t => `<li>${t}</li>`).join("")}</ul>
             <h5>🎯 典型场景</h5>
             <ul>${a.scenes.map(s => `<li>${s}</li>`).join("")}</ul>
+            <h5>👤 适合谁</h5>
+            <div class="ac-extra">${a.forWhom}</div>
+            <h5>🏆 差异化亮点</h5>
+            <div class="ac-extra">${a.edge}</div>
+            <h5>🔗 推荐搭配</h5>
+            <div class="ac-extra">${a.stack}</div>
             <div class="ac-price"><b>价格：</b>${a.price}</div>
             <div class="ac-note">⚠️ ${a.note}</div>
           </div>
