@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 使用智能助理 · 学习向导</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 顶部 -->
+  <header class="site-header">
+    <div class="brand">
+      <span class="logo">🧭</span>
+      <div>
+        <h1>AI 使用智能助理 · 学习向导</h1>
+        <p class="subtitle">从「能聊」到「能干」——中美模型 · 核心概念 · 流行 Agent 一站读懂</p>
+      </div>
+    </div>
+    <nav class="topnav" id="topnav">
+      <button class="navbtn active" data-tab="overview">概览</button>
+      <button class="navbtn" data-tab="models">① 中美模型</button>
+      <button class="navbtn" data-tab="concepts">② 核心概念</button>
+      <button class="navbtn" data-tab="agents">③ 流行 Agent</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 概览 -->
+    <section class="panel active" id="panel-overview">
+      <div class="hero">
+        <h2>三步搞懂 AI 助理时代</h2>
+        <p>2026 年被称为「Agent 元年」。AI 产品重心正从「回答你的问题」转向「替你完成事情」。
+          本向导用三个模块帮你建立完整认知：</p>
+        <div class="hero-cards">
+          <div class="hero-card" data-goto="models">
+            <span class="hnum">①</span>
+            <h3>中美主流 AI 模型</h3>
+            <p>美国三强 + 国产军团 + 开源力量，谁擅长什么、怎么选。</p>
+          </div>
+          <div class="hero-card" data-goto="concepts">
+            <span class="hnum">②</span>
+            <h3>AI 核心概念互动</h3>
+            <p>Prompt / Skill / Agent / MCP / Token 是什么、怎么协同。</p>
+          </div>
+          <div class="hero-card" data-goto="agents">
+            <span class="hnum">③</span>
+            <h3>流行 AI Agent</h3>
+            <p>通用、编程、平台、研究类 Agent 的使用技巧与场景。</p>
+          </div>
+        </div>
+      </div>
+      <div class="overview-flow">
+        <h3>一句话串起五个概念</h3>
+        <div class="flow-strip">
+          <span class="chip">Prompt 最基础</span><span class="arrow">→</span>
+          <span class="chip">Skill 打包 Prompt</span><span class="arrow">→</span>
+          <span class="chip">Agent 有 Skill + 动手能力</span><span class="arrow">→</span>
+          <span class="chip">MCP 连接工具</span><span class="arrow">→</span>
+          <span class="chip">Token 是底层燃料</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模块一：模型 -->
+    <section class="panel" id="panel-models">
+      <div class="sec-head">
+        <h2>① 中美主流 AI 模型</h2>
+        <p>数据基准：2026 年中。版本与价格随厂商迭代变化，选型以官方最新文档为准。</p>
+      </div>
+      <div class="filters">
+        <div class="filter-group" id="model-country">
+          <span class="fg-label">地区</span>
+          <button class="fbtn active" data-country="all">全部</button>
+          <button class="fbtn" data-country="us">美国</button>
+          <button class="fbtn" data-country="cn">中国</button>
+        </div>
+        <div class="filter-group" id="model-type">
+          <span class="fg-label">类型</span>
+          <button class="fbtn active" data-type="all">全部</button>
+          <button class="fbtn" data-type="closed">闭源</button>
+          <button class="fbtn" data-type="open">开源</button>
+        </div>
+        <input type="search" id="model-search" class="search-input" placeholder="搜索模型 / 厂商…" />
+      </div>
+      <div class="model-grid" id="model-grid"></div>
+    </section>
+
+    <!-- 模块二：概念 -->
+    <section class="panel" id="panel-concepts">
+      <div class="sec-head">
+        <h2>② AI 核心概念 · 图文互动</h2>
+        <p>点击标签查看每个概念的图文讲解，再点下方关系图里的节点看它们如何协同。</p>
+      </div>
+      <div class="concept-tabs" id="concept-tabs"></div>
+      <div class="concept-body" id="concept-body"></div>
+
+      <div class="relation-block">
+        <h3>🧩 它们怎么协同工作？（点击节点查看）</h3>
+        <div class="relation-wrap">
+          <div class="relation-svg" id="relation-svg"></div>
+          <div class="relation-detail" id="relation-detail">
+            <h4>点击左侧流程中的任意节点</h4>
+            <p>这里会显示该环节在「用户让 Agent 整理邮件」这个真实场景里做了什么。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模块三：Agent -->
+    <section class="panel" id="panel-agents">
+      <div class="sec-head">
+        <h2>③ 流行 AI Agent</h2>
+        <p>按「中国 / 美国 / 国际」分区浏览，点开卡片看「使用技巧」与「典型场景」，部分卡片可前往官网。</p>
+      </div>
+      <div class="filters">
+        <div class="filter-group" id="agent-cat">
+          <span class="fg-label">地区</span>
+          <!-- 按钮由 JS 注入 -->
+        </div>
+        <input type="search" id="agent-search" class="search-input" placeholder="搜索 Agent…" />
+      </div>
+      <div class="agent-grid" id="agent-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>AI 使用智能助理 · 学习向导 — 教学科普用途 · 内容基准 2026 年中 · 实际以官方文档为准</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
