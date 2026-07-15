@@ -18,6 +18,8 @@
     if (!panels[tab]) return;
     currentTab = tab;
     topnav.querySelectorAll(".navbtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+    const activeBtn = topnav.querySelector(".navbtn.active");
+    if (activeBtn) activeBtn.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
     Object.entries(panels).forEach(([k, el]) => el.classList.toggle("active", k === tab));
     if (tab === "concepts") highlightRelNode(activeConcept); // 概念 ⇄ 关系图联动
     window.scrollTo({ top: 0, behavior: "smooth" });
