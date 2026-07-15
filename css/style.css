@@ -237,6 +237,23 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .hero-cards { grid-template-columns: 1fr; }
   .cb-grid, .relation-wrap { grid-template-columns: 1fr; }
   .search-input { margin-left: 0; width: 100%; }
+  /* 小屏 7 个导航 tab 改为横向滚动，杜绝折行 */
+  .topnav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    gap: 6px;
+    padding-bottom: 6px;
+  }
+  .topnav::-webkit-scrollbar { display: none; }
+  .navbtn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    touch-action: pan-x;
+  }
 }
 
 /* 小屏手机（≤600px）：强制单列、收紧间距，避免窄屏横向溢出 */
