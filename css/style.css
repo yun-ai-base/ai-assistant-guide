@@ -266,3 +266,120 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   /* 触屏去除点按延迟，提升点击响应 */
   .hero-card, .model-card, .agent-card, .rel-node, .ac-toggle { touch-action: manipulation; }
 }
+
+/* ===================== 工具箱（模块五） ===================== */
+.toolkit-body { padding: 20px; }
+.tool-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; max-width: 900px;
+}
+.tool-intro { color: var(--text-dim); font-size: 13.5px; margin-bottom: 16px; }
+.tool-btn {
+  margin-top: 14px; padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #06121f; font-weight: 700; font-size: 14px;
+  touch-action: manipulation;
+}
+.tool-btn:hover { filter: brightness(1.08); }
+.tool-note { color: var(--text-faint); font-size: 12.5px; margin-top: 10px; }
+
+/* 选型决策器 */
+.sel-step { margin-bottom: 18px; }
+.sel-q { font-weight: 600; margin-bottom: 8px; font-size: 14.5px; }
+.sel-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.sel-opt {
+  padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg-soft);
+  color: var(--text); cursor: pointer; font-size: 13px; touch-action: manipulation;
+}
+.sel-opt:hover { border-color: var(--accent); }
+.sel-opt.on { background: var(--accent); color: #06121f; border-color: var(--accent); font-weight: 600; }
+.sel-result { margin-top: 8px; }
+.rec-block { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.rec-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+.rec-k { font-weight: 600; min-width: 92px; color: var(--text-dim); }
+.rec-chip { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: 12.5px; }
+.rec-tip { color: var(--text-faint); font-size: 12px; margin-top: 4px; }
+
+/* 成本计算器 */
+.calc-area {
+  width: 100%; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); padding: 12px; font-family: inherit; font-size: 14px; resize: vertical;
+}
+.calc-sum { margin: 14px 0 8px; font-size: 14px; }
+.calc-sum b { color: var(--accent); }
+
+/* 模型对比矩阵 */
+.matrix-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 6px; }
+.matrix { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 580px; }
+.matrix th, .matrix td { border: 1px solid var(--border); padding: 9px 10px; text-align: left; }
+.matrix thead th { background: var(--bg-soft); color: var(--text); position: sticky; top: 0; }
+.matrix th[data-k] { cursor: pointer; user-select: none; }
+.matrix th[data-k]:hover { color: var(--accent); }
+.matrix tbody tr:nth-child(odd) { background: rgba(255,255,255,.02); }
+.m-name { font-weight: 600; }
+.m-price { color: var(--text-dim); }
+
+/* 提示词库 */
+.pc-cat { margin-bottom: 18px; }
+.pc-cat h4 { font-size: 14px; color: var(--accent3); margin-bottom: 10px; }
+.pc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.pc-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; }
+.pc-title { font-weight: 600; margin-bottom: 8px; }
+.pc-text { font-size: 12.5px; color: var(--text-dim); flex: 1; line-height: 1.55; }
+.pc-copy { margin-top: 10px; align-self: flex-start; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--accent); cursor: pointer; font-size: 12.5px; touch-action: manipulation; }
+.pc-copy:hover { border-color: var(--accent); }
+
+/* 学习路线 */
+.rm { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.rm-item { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; }
+.rm-stage { font-weight: 700; font-size: 15px; color: var(--accent); margin-bottom: 6px; }
+.rm-desc { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+.rm-tips { list-style: none; font-size: 12.5px; color: var(--text); margin-bottom: 12px; }
+.rm-tips li { padding: 4px 0 4px 16px; position: relative; }
+.rm-tips li::before { content: "▸"; position: absolute; left: 0; color: var(--accent3); }
+.rm-go { margin-top: auto; align-self: flex-start; padding: 7px 14px; border: none; border-radius: 8px; background: var(--accent2); color: #11061f; font-weight: 600; cursor: pointer; font-size: 12.5px; touch-action: manipulation; }
+
+/* ===================== 进阶延展特殊布局（模块六） ===================== */
+/* 对照表 */
+.cmp-table { margin-top: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.cmp-table table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+.cmp-table th, .cmp-table td { border: 1px solid var(--border); padding: 9px 10px; text-align: left; vertical-align: top; }
+.cmp-table thead th { background: var(--bg-soft); }
+.cmp-k { background: var(--bg-soft); color: var(--text-dim); white-space: nowrap; }
+
+/* 端到端全景流 */
+.e2e { margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+.e2e-node { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; width: 100%; max-width: 420px; }
+.e2e-ico { font-size: 26px; }
+.e2e-name { font-weight: 600; }
+.e2e-sub { font-size: 12px; color: var(--text-dim); }
+.e2e-arrow { color: var(--accent); font-size: 18px; margin: 2px 0; }
+
+/* 时间线 */
+.tl { margin-top: 16px; border-left: 2px solid var(--border); padding-left: 18px; }
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-item::before { content: ""; position: absolute; left: -25px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+.tl-y { font-weight: 700; color: var(--accent); font-size: 13px; }
+.tl-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-top: 4px; }
+.tl-t { font-weight: 600; }
+.tl-d { font-size: 12.5px; color: var(--text-dim); margin-top: 2px; }
+
+/* 性格卡 */
+.ps-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.ps-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.ps-card.cn { border-color: var(--cn); }
+.ps-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ps-name { font-weight: 600; }
+.ps-style { color: var(--accent2); font-weight: 600; margin: 6px 0; }
+.ps-say { font-size: 12.5px; color: var(--text-dim); font-style: italic; }
+
+/* ===================== 小屏手机（≤600px）补充 ===================== */
+@media (max-width: 600px) {
+  .toolkit-body { padding: 16px; }
+  .tool-card { padding: 16px; }
+  .concept-tabs { gap: 6px; }
+  .ctab { padding: 6px 10px; font-size: 12px; }
+  .pc-grid, .rm, .ps-grid { grid-template-columns: 1fr; }
+  .e2e-node { max-width: 100%; }
+  .matrix { min-width: 520px; }
+  .cb-aside { position: static; }
+}
