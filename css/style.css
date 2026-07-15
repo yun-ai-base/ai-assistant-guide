@@ -141,6 +141,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .cb-block { margin-bottom: 16px; }
 .cb-block h4 { font-size: 13.5px; color: var(--accent3); margin-bottom: 6px; }
 .cb-block p { font-size: 13.5px; color: var(--text-dim); }
+.cb-block.myth p { color: #fca5a5; }
+.cb-block.try p { color: #86efac; }
+.cb-block.related p { color: var(--text); }
 .cb-points { list-style: none; }
 .cb-points li { font-size: 13.5px; padding-left: 18px; position: relative; margin-bottom: 6px; color: var(--text); }
 .cb-points li::before { content: "✓"; position: absolute; left: 0; color: var(--accent3); }
@@ -171,6 +174,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .ts-feat li { font-size: 12.5px; padding-left: 14px; position: relative; margin-bottom: 3px; color: var(--text); }
 .ts-feat li::before { content: "▹"; position: absolute; left: 0; color: var(--accent2); }
 .ts-scene { font-size: 12.5px; color: var(--text-dim); margin-bottom: 10px; }
+.ts-trigger { font-size: 12px; color: #86efac; background: rgba(52,211,153,.08); border-left: 3px solid #34d399; padding: 7px 11px; border-radius: 6px; margin-bottom: 12px; }
 .ts-link { display: inline-block; font-size: 12.5px; color: var(--accent); text-decoration: none; font-weight: 600; }
 .ts-link:hover { text-decoration: underline; }
 
@@ -214,6 +218,12 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .agent-board-head { font-size: 15px; font-weight: 700; color: var(--text); margin: 4px 2px 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .ac-site { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--accent); text-decoration: none; }
 .ac-site:hover { text-decoration: underline; }
+.ac-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.ac-diff { font-size: 10.5px; padding: 3px 9px; border-radius: 999px; white-space: nowrap; border: 1px solid var(--border); }
+.ac-diff[data-level="简单"] { background: rgba(52,211,153,.15); color: #34d399; border-color: rgba(52,211,153,.4); }
+.ac-diff[data-level="中等"] { background: rgba(251,191,36,.14); color: #fbbf24; border-color: rgba(251,191,36,.4); }
+.ac-diff[data-level="进阶"] { background: rgba(244,114,182,.14); color: #f472b6; border-color: rgba(244,114,182,.4); }
+.ac-extra { font-size: 13px; color: var(--text); line-height: 1.55; }
 
 /* Footer */
 .site-footer { text-align: center; color: var(--text-faint); font-size: 12.5px; padding: 24px; border-top: 1px solid var(--border); margin-top: 30px; }
