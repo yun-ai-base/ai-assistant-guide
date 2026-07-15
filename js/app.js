@@ -59,7 +59,8 @@
       ? list.map(m => {
         const site = MODEL_SITES[m.id] || "#";
         return `
-        <article class="model-card ${m.country === "cn" ? "cn-click" : ""}" ${m.country === "cn" ? `data-site="${site}"` : ""}>
+        <article class="model-card ${m.country === "cn" ? "cn-click" : ""}">
+          ${m.country === "cn" ? `<a class="mc-stretch" href="${site}" target="_blank" rel="noopener" aria-label="前往 ${m.name} 官网"></a>` : ""}
           <span class="flag ${m.country}">${m.country === "us" ? "🇺🇸 美国" : "🇨🇳 中国"}</span>
           <div class="mc-head">
             <div>
@@ -104,14 +105,6 @@
     state.q = e.target.value.trim(); renderModels();
   });
   renderModels();
-
-  // 中国模型卡片整体点击 → 新标签打开官网（点击显式链接时不重复触发）
-  grid.addEventListener("click", e => {
-    const card = e.target.closest(".model-card");
-    if (!card || !card.dataset.site) return;
-    if (e.target.closest("a")) return;
-    window.open(card.dataset.site, "_blank", "noopener");
-  });
 
   /* ===================== 模块二：概念 ===================== */
   const tabsEl = document.getElementById("concept-tabs");
@@ -297,7 +290,7 @@
           </div>
           <div class="ac-summary">${a.summary}</div>
           <div class="ac-scenes">${a.scenes.map(s => `<span class="ac-scene">${s}</span>`).join("")}</div>
-          <div class="ac-toggle">▾ 展开使用技巧与场景</div>
+          <button type="button" class="ac-toggle">▾ 展开使用技巧与场景</button>
           <div class="ac-detail">
             <h5>🛠 使用技巧</h5>
             <ul>${a.tips.map(t => `<li>${t}</li>`).join("")}</ul>
@@ -311,7 +304,8 @@
       : `<p style="color:var(--text-dim)">没有匹配的 Agent。</p>`);
 
     agentGrid.querySelectorAll(".agent-card").forEach(card => {
-      card.querySelector(".ac-toggle").addEventListener("click", () => {
+      card.addEventListener("click", e => {
+        if (e.target.closest("a")) return; // 点官网链接不触发展开
         card.classList.toggle("open");
         const t = card.querySelector(".ac-toggle");
         t.textContent = card.classList.contains("open") ? "▴ 收起" : "▾ 展开使用技巧与场景";
