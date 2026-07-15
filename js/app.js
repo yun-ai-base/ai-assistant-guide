@@ -8,7 +8,8 @@
     overview: document.getElementById("panel-overview"),
     models: document.getElementById("panel-models"),
     concepts: document.getElementById("panel-concepts"),
-    agents: document.getElementById("panel-agents")
+    agents: document.getElementById("panel-agents"),
+    insights: document.getElementById("panel-insights")
   };
   let currentTab = "overview";
   function switchTab(tab) {
@@ -380,7 +381,48 @@
   });
   renderAgents();
 
-  // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents）
+  /* ===================== 模块四：AI 全景洞察 ===================== */
+  const insTabsEl = document.getElementById("insight-tabs");
+  const insBodyEl = document.getElementById("insight-body");
+  let activeInsight = INSIGHTS[0].id;
+
+  insTabsEl.innerHTML = INSIGHTS.map(c =>
+    `<button class="ctab ${c.id === activeInsight ? "active" : ""}" data-id="${c.id}">
+       <span class="ico">${c.icon}</span>${c.name.split("（")[0]}
+     </button>`).join("");
+
+  function renderInsight() {
+    const c = INSIGHTS.find(x => x.id === activeInsight);
+    insTabsEl.querySelectorAll(".ctab").forEach(b => b.classList.toggle("active", b.dataset.id === activeInsight));
+    const secHtml = c.sections.map(s => {
+      if (s.list) {
+        return `<div class="cb-block"><h4>${s.h}</h4><ul class="cb-points">${s.list.map(i => `<li>${i}</li>`).join("")}</ul></div>`;
+      }
+      return `<div class="cb-block"><h4>${s.h}</h4><p>${s.p}</p></div>`;
+    }).join("");
+    insBodyEl.innerHTML = `
+      <div class="cb-grid">
+        <div>
+          <div class="cb-title">${c.icon} ${c.name}</div>
+          <div class="cb-oneliner">${c.oneLiner}</div>
+          <div class="cb-def">${c.def}</div>
+          ${secHtml}
+          <div class="cb-block related"><h4>🔗 关联模块</h4><p class="cb-rel">${c.related}</p></div>
+        </div>
+        <aside class="cb-aside">
+          <div class="layer">${c.layer}</div>
+          <div class="analogy-title">💡 一句话记住</div>
+          <div class="analogy">${c.takeaway}</div>
+        </aside>
+      </div>`;
+  }
+  insTabsEl.addEventListener("click", e => {
+    const b = e.target.closest(".ctab"); if (!b) return;
+    activeInsight = b.dataset.id; renderInsight();
+  });
+  renderInsight();
+
+  // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents / #insights）
   applyHash();
 
 })();
