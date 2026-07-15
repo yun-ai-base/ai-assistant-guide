@@ -10,10 +10,15 @@
     concepts: document.getElementById("panel-concepts"),
     agents: document.getElementById("panel-agents")
   };
+  let currentTab = "overview";
   function switchTab(tab) {
+    if (!panels[tab]) return;
+    currentTab = tab;
     topnav.querySelectorAll(".navbtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
     Object.entries(panels).forEach(([k, el]) => el.classList.toggle("active", k === tab));
+    if (tab === "concepts") highlightRelNode(activeConcept); // 概念 ⇄ 关系图联动
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (location.hash.slice(1) !== tab) history.replaceState(null, "", "#" + tab); // 可分享 / 刷新保留
   }
   topnav.addEventListener("click", e => {
     const btn = e.target.closest(".navbtn");
@@ -22,6 +27,12 @@
   document.querySelectorAll(".hero-card").forEach(c =>
     c.addEventListener("click", () => switchTab(c.dataset.goto))
   );
+  // 支持 URL 直达（如 #models、#concepts），浏览器前进/后退也能用
+  function applyHash() {
+    const t = location.hash.slice(1);
+    if (t && panels[t] && t !== currentTab) switchTab(t);
+  }
+  window.addEventListener("hashchange", applyHash);
 
   /* ===================== 模块一：模型 ===================== */
   const grid = document.getElementById("model-grid");
@@ -191,6 +202,7 @@
       </div>
       ${c.id === "skill" ? topSkillsHtml() : ""}
     `;
+    highlightRelNode(c.id); // 概念 ⇄ 关系图联动：高亮对应节点
   }
 
   function topSkillsHtml() {
@@ -221,7 +233,6 @@
     const b = e.target.closest(".ctab"); if (!b) return;
     activeConcept = b.dataset.id; renderConcept();
   });
-  renderConcept();
 
   /* ---------- 关系图（可点击节点） ---------- */
   const relSvg = document.getElementById("relation-svg");
@@ -251,13 +262,27 @@
         node.classList.add("active");
         const d = FLOW.find(f => f.id === node.dataset.id);
         relDetail.innerHTML = `<h4>${d.label}</h4><p>${d.desc}</p>`;
+        // 若节点对应某个概念，联动切换概念讲解
+        if (CONCEPTS.some(c => c.id === node.dataset.id)) {
+          activeConcept = node.dataset.id;
+          renderConcept();
+        }
       });
     });
+  }
+
+  // 概念 ⇄ 关系图联动：高亮 FLOW 中与该概念同 id 的节点
+  function highlightRelNode(id) {
+    if (!relSvg) return;
+    relSvg.querySelectorAll(".rel-node").forEach(x => x.classList.toggle("active", x.dataset.id === id));
+    const d = FLOW.find(f => f.id === id);
+    if (d) relDetail.innerHTML = `<h4>${d.label}</h4><p>${d.desc}</p>`;
   }
   buildRelation();
   // 默认选中 Agent 节点做演示
   const defNode = relSvg.querySelector('[data-id="agent"]');
   if (defNode) { defNode.classList.add("active"); const d = FLOW.find(f => f.id === "agent"); relDetail.innerHTML = `<h4>${d.label}</h4><p>${d.desc}</p>`; }
+  renderConcept(); // 关系图就绪后再首渲染概念（含联动高亮）
 
   /* ===================== 模块三：Agent ===================== */
   const agentGrid = document.getElementById("agent-grid");
@@ -323,5 +348,8 @@
     agentState.q = e.target.value.trim(); renderAgents();
   });
   renderAgents();
+
+  // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents）
+  applyHash();
 
 })();
