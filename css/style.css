@@ -71,7 +71,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .hero > p { color: var(--text-dim); max-width: 720px; }
 .hero-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
 .hero-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: .2s; }
-.hero-card:hover { transform: translateY(-4px); border-color: var(--accent); background: var(--card-hover); }
+@media (hover: hover) {
+  .hero-card:hover { transform: translateY(-4px); border-color: var(--accent); background: var(--card-hover); }
+}
 .hero-card .hnum { font-size: 26px; font-weight: 800; color: var(--accent); }
 .hero-card h3 { font-size: 16px; margin: 8px 0 6px; }
 .hero-card p { font-size: 13px; color: var(--text-dim); }
@@ -95,7 +97,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 /* Model grid */
 .model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
 .model-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; transition: .2s; position: relative; overflow: hidden; }
-.model-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow); }
+@media (hover: hover) {
+  .model-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow); }
+}
 .model-card .flag { position: absolute; top: 0; right: 0; font-size: 11px; padding: 4px 12px; border-bottom-left-radius: 10px; font-weight: 600; }
 .flag.us { background: rgba(96,165,250,.18); color: var(--us); }
 .flag.cn { background: rgba(244,114,182,.18); color: var(--cn); }
@@ -114,8 +118,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .mc-price { margin-top: 10px; font-size: 12.5px; color: var(--text-dim); border-top: 1px dashed var(--border); padding-top: 8px; }
 .mc-price b { color: var(--text); }
 .model-card.cn-click { cursor: pointer; }
-.model-card.cn-click:hover { border-color: var(--cn); }
-.mc-site { display: inline-block; margin-top: 12px; font-size: 12.5px; color: var(--accent); text-decoration: none; font-weight: 600; }
+/* 整卡拉伸链接：手机上可靠跳转（避免 window.open 被弹窗拦截 + 规避 iOS 首次点击=hover 问题） */
+.mc-stretch { position: absolute; inset: 0; z-index: 1; }
+.mc-site { position: relative; z-index: 2; display: inline-block; margin-top: 12px; font-size: 12.5px; color: var(--accent); text-decoration: none; font-weight: 600; }
 .mc-site:hover { text-decoration: underline; }
 
 /* Concept tabs */
@@ -149,7 +154,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .ts-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
 .ts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 .ts-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; transition: .18s; }
-.ts-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+@media (hover: hover) {
+  .ts-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+}
 .ts-head { display: flex; align-items: center; gap: 10px; }
 .ts-rank { font-size: 18px; font-weight: 800; color: var(--accent2); min-width: 30px; }
 .ts-titles { flex: 1; }
@@ -171,7 +178,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .relation-svg svg { width: 100%; height: auto; }
 .rel-node { cursor: pointer; transition: .15s; }
 .rel-node rect, .rel-node circle { transition: .15s; }
-.rel-node:hover rect, .rel-node:hover circle { filter: brightness(1.25); }
+@media (hover: hover) {
+  .rel-node:hover rect, .rel-node:hover circle { filter: brightness(1.25); }
+}
 .rel-node.active rect, .rel-node.active circle { stroke: var(--accent); stroke-width: 3; }
 .relation-detail { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 18px; align-self: start; min-height: 200px; }
 .relation-detail h4 { font-size: 16px; color: var(--accent); margin-bottom: 8px; }
@@ -180,7 +189,9 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 /* Agent grid */
 .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
 .agent-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; transition: .2s; cursor: pointer; }
-.agent-card:hover { border-color: var(--accent2); transform: translateY(-3px); box-shadow: var(--shadow); }
+@media (hover: hover) {
+  .agent-card:hover { border-color: var(--accent2); transform: translateY(-3px); box-shadow: var(--shadow); }
+}
 .ac-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .ac-name { font-size: 18px; font-weight: 700; }
 .ac-vendor { font-size: 12.5px; color: var(--text-dim); }
@@ -188,7 +199,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 .ac-summary { font-size: 13.5px; color: var(--text-dim); margin: 10px 0; }
 .ac-scenes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .ac-scene { font-size: 11.5px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; color: var(--text-dim); }
-.ac-toggle { font-size: 13px; color: var(--accent); margin-top: 6px; }
+.ac-toggle { width: 100%; text-align: left; background: none; border: 0; font: inherit; cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 6px; padding: 6px 0; }
 .ac-detail { display: none; margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 14px; }
 .agent-card.open .ac-detail { display: block; }
 .ac-detail h5 { font-size: 13px; color: var(--accent3); margin: 10px 0 5px; }
@@ -235,4 +246,6 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .mc-name, .ac-name { font-size: 16px; }
   .relation-wrap { gap: 16px; }
   .ts-head { flex-wrap: wrap; }
+  /* 触屏去除点按延迟，提升点击响应 */
+  .hero-card, .model-card, .agent-card, .rel-node, .ac-toggle { touch-action: manipulation; }
 }
