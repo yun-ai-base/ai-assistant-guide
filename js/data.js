@@ -69,12 +69,12 @@ const MODELS = [
   },
   {
     id: "grok",
-    name: "Grok",
+    name: "Grok 4.1",
     vendor: "xAI",
     country: "us",
     type: "closed",
     region: "美国",
-    version: "Grok（2025–2026）",
+    version: "Grok 4.1（2026）",
     context: "长上下文",
     strengths: ["实时接入 X 平台数据", "时事 / 社交舆情分析强", "风格直率"],
     weakness: ["通用中文场景非主战场", "国内访问受限"],
@@ -102,7 +102,7 @@ const MODELS = [
     forWhom: "开发者、科研、企业私有化——预算敏感又想要强推理的人首选。",
     tip: "数学 / 代码任务直接给条件即可，省 token；自部署用 vLLM / Ollama 几分钟起。",
     stack: "是本地 OpenClaw / Hermes 的默认引擎，配 Codex 做云端并行。",
-    price: "约 ¥1.5 / 千 token（开源可自部署）",
+    price: "约 ¥1.5 / 百万 token（开源可自部署）",
     tag: "开源性价比王"
   },
   {
@@ -210,7 +210,7 @@ const MODELS = [
     forWhom: "超长上下文、编程 Agent、多模态（文 / 图 / 音 / 视频）生成、企业 API。",
     tip: "长文档用 1M 窗口一次喂完；视频 / 语音走海螺，文本走 M3。",
     stack: "配 MCP 接业务数据，配 Algorithmic Art Skill 出视觉。",
-    price: "开源权重 + Plus 约 $20≈12.5B tokens/月",
+    price: "开源权重 + Plus 约 $20/月（含约 125 亿 tokens）",
     tag: "长上下文/多模态"
   },
   {
@@ -631,7 +631,7 @@ const AGENTS = [
     category: "open",
     badge: "开源个人 AI 助理",
     difficulty: "进阶",
-    site: "",
+    site: "https://github.com/search?q=OpenClaw+open+source+AI+agent&type=repositories",
     summary: "可自托管的个人 Agent，连接 25+ 消息频道，语音唤醒 + 实时画布，原生接 Claude。",
     forWhom: "想完全掌控数据、会自托管的极客。",
     edge: "25+ 频道、完全数据所有权、可换任意 LLM 后端。",
@@ -653,7 +653,7 @@ const AGENTS = [
     category: "open",
     badge: "自进化开源 Agent",
     difficulty: "进阶",
-    site: "",
+    site: "https://github.com/search?q=Hermes+Agent+Nous+Research&type=repositories",
     summary: "Nous Research 于 2026-02 推出的开源自主 Agent 框架，因英文名撞奢侈品被国内开发者戏称「爱马仕」。最大特点是『自我进化』：从任务中自动提炼、迭代技能卡，跨平台记忆（微信 / QQ / 飞书互通）。",
     forWhom: "想『养马』、让 Agent 自己从任务里长能力的人。",
     edge: "从任务中自生成技能卡、跨平台记忆，『会动脑的学徒』。",
@@ -994,7 +994,11 @@ const EXTENSIONS = [
       { id: "kimi", style: "安静书虫", say: "『几十万字我慢慢读，给你摘要。』" },
       { id: "glm", style: "公文笔杆子", say: "『中文最地道，结构我帮你理。』" },
       { id: "gemini", style: "科学极客", say: "『看图听音做实验，我快又准。』" },
-      { id: "qwen", style: "国产万金油", say: "『Agent/编程/办公我都能搭。』" }
+      { id: "qwen", style: "国产万金油", say: "『Agent/编程/办公我都能搭。』" },
+      { id: "grok", style: "毒舌时事咖", say: "『实时热点我最快，X 上的瓜我替你吃。』" },
+      { id: "hunyuan", style: "生态连接器", say: "『微信/企微/腾讯文档我都能接，办公就找我。』" },
+      { id: "minimax", style: "多模态玩家", say: "『文/图/音/视频我都能生，长文本也不怕。』" },
+      { id: "mimo", style: "端侧全能娃", say: "『手机/座舱里我也能跑，MIT 开源随便用。』" }
     ],
     related: "关联：模块一 12 个模型的『选型建议』。"
   },
@@ -1113,13 +1117,13 @@ const TOOLS = {
   pricing: [
     { id: "gpt", name: "GPT-5.5/5.6", perM: 10 },
     { id: "claude", name: "Claude Opus 4.7/4.8", perM: 15 },
-    { id: "gemini", name: "Gemini 3.1 Pro", perM: 1.5 },
+    { id: "gemini", name: "Gemini 3.1 Pro", perM: 0.3 },
     { id: "grok", name: "Grok", perM: 5 },
-    { id: "deepseek", name: "DeepSeek V4", perM: 0.4 },
+    { id: "deepseek", name: "DeepSeek V4", perM: 0.2 },
     { id: "qwen", name: "通义千问 Qwen3", perM: 0.6 },
     { id: "doubao", name: "豆包 Seed 2.0", perM: 0 },
     { id: "glm", name: "智谱 GLM-5.1", perM: 1.2 },
-    { id: "kimi", name: "Kimi k2", perM: 1.0 },
+    { id: "kimi", name: "Kimi k2", perM: 0.8 },
     { id: "hunyuan", name: "腾讯混元", perM: 0 },
     { id: "minimax", name: "MiniMax M3", perM: 1.0 },
     { id: "mimo", name: "小米 MiMo-V2.5", perM: 0.8 }
