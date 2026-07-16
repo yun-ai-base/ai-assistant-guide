@@ -13,6 +13,8 @@
     toolkit: document.getElementById("panel-toolkit"),
     extensions: document.getElementById("panel-extensions"),
     knowledge: document.getElementById("panel-knowledge"),
+    pitfalls: document.getElementById("panel-pitfalls"),
+    creative: document.getElementById("panel-creative"),
     changelog: document.getElementById("panel-changelog")
   };
   let currentTab = "overview";
@@ -76,7 +78,7 @@
     if (!b) return;
     e.stopPropagation();
     const type = b.dataset.cmpType, id = b.dataset.cmpId, name = b.dataset.cmpName || b.textContent;
-    const tabMap = { models: "models", agents: "agents", knowledge: "knowledge" };
+    const tabMap = { models: "models", agents: "agents", knowledge: "knowledge", creative: "creative" };
     compareToggle(type, id, name, tabMap[type]);
   });
 
@@ -96,6 +98,7 @@
     if (type === "models") return MODELS.find(x => x.id === id);
     if (type === "agents") return AGENTS.find(x => x.id === id);
     if (type === "knowledge") return KNOWLEDGES.find(x => x.id === id);
+    if (type === "creative") return CREATIVES.find(x => x.id === id);
     return null;
   }
   function compareRows(item, type) {
@@ -111,6 +114,10 @@
     ];
     if (type === "knowledge") return [
       ["厂商", item.vendor], ["类型", item.kind === "pkm" ? "传统 PKM" : item.kind === "ai-native" ? "AI 原生" : "RAG 平台"],
+      ["简介", item.summary], ["价格", item.price]
+    ];
+    if (type === "creative") return [
+      ["厂商", item.vendor], ["类型", item.kind === "image" ? "图像生成" : item.kind === "video" ? "视频生成" : item.kind === "audio" ? "音乐/音频" : "综合创作"],
       ["简介", item.summary], ["价格", item.price]
     ];
     return [];
@@ -144,11 +151,13 @@
   // ---- 全局搜索 ----
   const searchInput = document.getElementById("global-search");
   const searchResultsEl = document.getElementById("search-results");
-  const TYPE_LABEL = { models: "模型", agents: "Agent", knowledge: "知识库", concepts: "概念" };
+  const TYPE_LABEL = { models: "模型", agents: "Agent", knowledge: "知识库", concepts: "概念", creative: "创作", pitfalls: "避坑" };
   const searchIndex = [];
   MODELS.forEach(m => searchIndex.push({ type: "models", tab: "models", id: m.id, name: m.name, sub: m.vendor, cardId: "card-model-" + m.id, hay: (m.name + " " + m.vendor + " " + m.tag + " " + m.scene).toLowerCase() }));
   AGENTS.forEach(a => searchIndex.push({ type: "agents", tab: "agents", id: a.id, name: a.name, sub: a.vendor, cardId: "card-agent-" + a.id, hay: (a.name + " " + a.vendor + " " + a.summary + " " + a.scenes.join(" ")).toLowerCase() }));
   KNOWLEDGES.forEach(k => searchIndex.push({ type: "knowledge", tab: "knowledge", id: k.id, name: k.name, sub: k.vendor, cardId: "card-kb-" + k.id, hay: (k.name + " " + k.vendor + " " + k.badge + " " + k.summary).toLowerCase() }));
+  CREATIVES.forEach(c => searchIndex.push({ type: "creative", tab: "creative", id: c.id, name: c.name, sub: c.vendor, cardId: "card-cr-" + c.id, hay: (c.name + " " + c.vendor + " " + c.badge + " " + c.summary).toLowerCase() }));
+  PITFALLS.forEach(p => searchIndex.push({ type: "pitfalls", tab: "pitfalls", id: p.id, name: p.title, sub: p.cat, cardId: "card-pf-" + p.id, hay: (p.title + " " + p.cat + " " + p.scene + " " + p.what + " " + p.fix).toLowerCase() }));
   CONCEPTS.forEach(c => searchIndex.push({ type: "concepts", tab: "concepts", id: c.id, name: c.name, sub: "核心概念", cardId: null, gotoConcept: c.id, hay: (c.name + " " + c.oneLiner + " " + c.def + " " + c.points.join(" ")).toLowerCase() }));
 
   let srActive = -1;
@@ -952,6 +961,121 @@
   // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents / #insights）
   applyHash();
 
+  /* ===================== 避坑指南 ===================== */
+  const pfGrid = document.getElementById("pf-grid");
+  const pfState = { cat: "all", q: "" };
+  function pfMatches(p) {
+    if (pfState.cat !== "all" && p.cat !== pfState.cat) return false;
+    if (pfState.q) {
+      const s = (p.title + p.cat + p.scene + p.what + p.result + p.fix + p.motto).toLowerCase();
+      if (!s.includes(pfState.q.toLowerCase())) return false;
+    }
+    return true;
+  }
+  function renderPitfalls() {
+    const list = PITFALLS.filter(pfMatches);
+    pfGrid.innerHTML = list.length ? list.map(p => `
+      <article class="pf-card level-${p.level}" id="card-pf-${p.id}">
+        <div class="pf-head">
+          <span class="pf-emoji">${p.emoji}</span>
+          <div>
+            <div class="pf-title">${p.title}</div>
+            <div class="pf-tags"><span class="pf-cat">${p.cat}</span><span class="pf-level">${p.level}</span></div>
+          </div>
+        </div>
+        <div class="pf-block"><b>场景：</b>${p.scene}</div>
+        <div class="pf-block"><b>踩了什么：</b>${p.what}</div>
+        <div class="pf-block"><b>后果：</b>${p.result}</div>
+        <div class="pf-block fix"><b>正确做法：</b>${p.fix}</div>
+        <div class="pf-motto">💡 口诀：${p.motto}</div>
+      </article>`).join("")
+      : `<p style="color:var(--text-dim)">没有匹配的坑点，试试调整筛选。</p>`;
+  }
+  document.getElementById("pf-cat").addEventListener("click", e => {
+    const b = e.target.closest(".fbtn"); if (!b) return;
+    pfState.cat = (b.dataset.cat === pfState.cat) ? "all" : b.dataset.cat;
+    document.querySelectorAll("#pf-cat .fbtn").forEach(x => x.classList.toggle("active", x.dataset.cat === pfState.cat));
+    renderPitfalls();
+  });
+  document.getElementById("pf-search").addEventListener("input", e => {
+    pfState.q = e.target.value.trim(); renderPitfalls();
+  });
+  renderPitfalls();
+
+  /* ===================== 多模态创作 ===================== */
+  const crGrid = document.getElementById("cr-grid");
+  const crState = { kind: "all", country: "all", q: "" };
+  function crMatches(c) {
+    if (crState.kind !== "all" && c.kind !== crState.kind) return false;
+    if (crState.country !== "all" && c.country !== crState.country) return false;
+    if (crState.q) {
+      const s = (c.name + c.vendor + c.badge + c.summary).toLowerCase();
+      if (!s.includes(crState.q.toLowerCase())) return false;
+    }
+    return true;
+  }
+  function crKindLabel(k) {
+    return k === "image" ? "图像生成" : k === "video" ? "视频生成" : k === "audio" ? "音乐/音频" : k === "mix" ? "综合创作" : k;
+  }
+  function renderCreative() {
+    const list = CREATIVES.filter(crMatches);
+    const head = `<div class="agent-board-head">多模态创作 · 共 ${list.length} 个</div>`;
+    crGrid.innerHTML = (list.length ? head : "") + (list.length
+      ? list.map(c => `
+        <article class="agent-card" id="card-cr-${c.id}">
+          ${cmpBtn("creative", c.id, c.name)}
+          <div class="ac-head">
+            <div>
+              <div class="ac-name">${c.name}</div>
+              <div class="ac-vendor">${c.vendor}</div>
+            </div>
+            <div class="ac-badges">
+              <span class="ac-badge">${c.badge}</span>
+              <span class="kb-kind" data-kind="${c.kind}">${crKindLabel(c.kind)}</span>
+            </div>
+          </div>
+          <div class="ac-summary">${c.summary}</div>
+          <button type="button" class="ac-toggle">▾ 展开详情与联动</button>
+          <div class="ac-detail">
+            <h5>核心特点</h5>
+            <ul>${c.features.map(f => `<li>${f}</li>`).join("")}</ul>
+            <h5>适合谁</h5>
+            <div class="ac-extra">${c.forWhom}</div>
+            <h5>与工作流联动</h5>
+            <div class="ac-extra">${c.link}</div>
+            <div class="ac-price"><b>价格：</b>${c.price}</div>
+            <div class="ac-note">${c.note}</div>
+          </div>
+          ${c.site ? `<a class="ac-site" href="${c.site}" target="_blank" rel="noopener">🌐 前往官网 →</a>` : ""}
+        </article>`).join("")
+      : `<p style="color:var(--text-dim)">没有匹配的创作工具。</p>`);
+
+    crGrid.querySelectorAll(".agent-card").forEach(card => {
+      card.addEventListener("click", e => {
+        if (e.target.closest("a") || e.target.closest(".cmp-add")) return;
+        card.classList.toggle("open");
+        const t = card.querySelector(".ac-toggle");
+        t.textContent = card.classList.contains("open") ? "▴ 收起" : "▾ 展开详情与联动";
+      });
+    });
+  }
+  document.getElementById("cr-kind").addEventListener("click", e => {
+    const b = e.target.closest(".fbtn"); if (!b) return;
+    crState.kind = (b.dataset.kind === crState.kind) ? "all" : b.dataset.kind;
+    document.querySelectorAll("#cr-kind .fbtn").forEach(x => x.classList.toggle("active", x.dataset.kind === crState.kind));
+    renderCreative();
+  });
+  document.getElementById("cr-country").addEventListener("click", e => {
+    const b = e.target.closest(".fbtn"); if (!b) return;
+    crState.country = (b.dataset.country === crState.country) ? "all" : b.dataset.country;
+    document.querySelectorAll("#cr-country .fbtn").forEach(x => x.classList.toggle("active", x.dataset.country === crState.country));
+    renderCreative();
+  });
+  document.getElementById("cr-search").addEventListener("input", e => {
+    crState.q = e.target.value.trim(); renderCreative();
+  });
+  renderCreative();
+
   /* ===================== 全局体验增强（v2） ===================== */
   // 1) 数据来源标注：每个带 sec-head 的面板加"内容基准"小字
   document.querySelectorAll(".sec-head").forEach(h => {
@@ -989,7 +1113,7 @@
   toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
   // 4) 键盘快捷键：数字键 1-9 切模块
-  const tabOrder = ["overview","models","concepts","agents","insights","toolkit","extensions","knowledge","changelog"];
+  const tabOrder = ["overview","models","concepts","agents","insights","toolkit","extensions","knowledge","pitfalls","creative","changelog"];
   let toastTimer;
   function showToast(msg) {
     let el = document.querySelector(".toast");
@@ -1012,6 +1136,7 @@
   // 5) 更新日志
   function renderChangelog() {
     const log = [
+      { date: "2026-07-16", title: "v2.1 · 避坑 + 多模态", desc: "新增 🛡 避坑指南（8 个真实风险：幻觉 / 隐私 / 过度授权 / 订阅陷阱等，附正确做法与口诀）与 🎨 多模态创作（12 个图像 / 视频 / 音乐工具：Midjourney / 可灵 / Suno / HeyGen 等，按类型与地区筛选、可加入对比）。全局搜索同步覆盖创作与避坑。" },
       { date: "2026-07-16", title: "v2 · 质感升级", desc: "新增深浅色切换（跟随系统 + 记忆）、阅读进度条、返回顶部、键盘快捷键（数字 1-9 切模块）、更新日志、概念线性图标、数据来源标注。" },
       { date: "2026-07-16", title: "v1.2 · AI 知识库模块", desc: "新增第⑦模块「AI 知识库 / PKM」：20 个产品（语雀 / 飞书 / IMA / Obsidian / Notion / Dify 等），含国内·海外·AI 原生·RAG 平台分类、热门筛选与暖金底色。" },
       { date: "2026-07-15", title: "v1.1 · 移动端与交互打磨", desc: "移动端导航横向滚动、卡片展开动画、成本计算器与模型卡价格对齐、性格拟人卡补全至 12/12。" },
