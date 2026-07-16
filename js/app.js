@@ -388,10 +388,11 @@
 
   /* ===================== 模块七：AI 知识库 / PKM ===================== */
   const kbGrid = document.getElementById("kb-grid");
-  const kbState = { country: "all", kind: "all", q: "" };
+  const kbState = { country: "all", kind: "all", hot: "all", q: "" };
   function kbMatches(k) {
     if (kbState.country !== "all" && k.country !== kbState.country) return false;
     if (kbState.kind !== "all" && k.kind !== kbState.kind) return false;
+    if (kbState.hot !== "all" && (kbState.hot === "1") !== !!k.hot) return false;
     if (kbState.q) {
       const s = (k.name + k.vendor + k.badge + k.summary).toLowerCase();
       if (!s.includes(kbState.q.toLowerCase())) return false;
@@ -450,6 +451,12 @@
     const b = e.target.closest(".fbtn"); if (!b) return;
     kbState.kind = b.dataset.kind;
     document.getElementById("kb-kind").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
+    renderKnowledge();
+  });
+  document.getElementById("kb-hot").addEventListener("click", e => {
+    const b = e.target.closest(".fbtn"); if (!b) return;
+    kbState.hot = b.dataset.hot;
+    document.getElementById("kb-hot").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
     renderKnowledge();
   });
   document.getElementById("kb-search").addEventListener("input", e => {
