@@ -1238,6 +1238,7 @@ const KNOWLEDGES = [
   },
   {
     id: "ima",
+    hot: true,
     name: "IMA",
     vendor: "腾讯",
     country: "cn",
@@ -1283,6 +1284,7 @@ const KNOWLEDGES = [
   },
   {
     id: "obsidian",
+    hot: true,
     name: "Obsidian",
     vendor: "Obsidian",
     country: "us",
@@ -1298,6 +1300,7 @@ const KNOWLEDGES = [
   },
   {
     id: "logseq",
+    hot: true,
     name: "Logseq",
     vendor: "Logseq",
     country: "us",
@@ -1313,6 +1316,7 @@ const KNOWLEDGES = [
   },
   {
     id: "notion",
+    hot: true,
     name: "Notion",
     vendor: "Notion",
     country: "us",
@@ -1328,6 +1332,7 @@ const KNOWLEDGES = [
   },
   {
     id: "roam",
+    hot: true,
     name: "Roam Research",
     vendor: "Roam",
     country: "us",
@@ -1388,6 +1393,7 @@ const KNOWLEDGES = [
   },
   {
     id: "dify",
+    hot: true,
     name: "Dify",
     vendor: "LangGenius",
     country: "us",
