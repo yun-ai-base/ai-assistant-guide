@@ -398,14 +398,6 @@
       <text x="187" y="84" fill="${C.txt}" font-size="11" text-anchor="middle">回</text>
       <path d="M20 120 H280" stroke="${C.w}" stroke-width="2" stroke-dasharray="4"/>
       <text x="150" y="140" fill="${C.w}" font-size="11" text-anchor="middle">上下文窗口 = 记忆上限 · API 按 Token 计费</text>` + tail;
-    if (id === "context") return head + `
-      <rect x="14" y="16" width="272" height="128" rx="14" fill="#161d2b" stroke="${C.w}" stroke-width="1.5"/>
-      <text x="150" y="34" fill="${C.w}" font-size="12" text-anchor="middle">Context 窗口（工作记忆）</text>
-      <rect x="28" y="44" width="244" height="20" rx="6" fill="#1a212e" stroke="${C.a}"/><text x="150" y="58" fill="${C.txt}" font-size="11" text-anchor="middle">📝 系统提示 / 你的指令</text>
-      <rect x="28" y="68" width="244" height="20" rx="6" fill="#1a212e" stroke="${C.b}"/><text x="150" y="82" fill="${C.txt}" font-size="11" text-anchor="middle">📘 Skill / 知识</text>
-      <rect x="28" y="92" width="244" height="20" rx="6" fill="#1a212e" stroke="${C.g}"/><text x="150" y="106" fill="${C.txt}" font-size="11" text-anchor="middle">🧠 历史记忆</text>
-      <rect x="28" y="116" width="244" height="20" rx="6" fill="#1a212e" stroke="${C.p}"/><text x="150" y="130" fill="${C.txt}" font-size="11" text-anchor="middle">🔌 工具 schema (MCP)</text>
-      <text x="150" y="152" fill="${C.w}" font-size="10" text-anchor="middle">窗口有限 · 超出则截断 / 遗忘</text>` + tail;
     return head + tail;
   }
 
@@ -415,8 +407,7 @@
       skill: '<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>',
       agent: '<rect x="5" y="8" width="14" height="10" rx="3"/><path d="M9 12h.01M15 12h.01"/><path d="M12 4v4"/>',
       mcp: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 7.5l3 8M16.5 7.5l-3 8"/>',
-      token: '<rect x="4" y="10" width="16" height="9" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>',
-      context: '<path d="M12 3l8 4-8 4-8-4 8-4z"/><path d="M4 11l8 4 8-4"/><path d="M4 15l8 4 8-4"/>'
+      token: '<rect x="4" y="10" width="16" height="9" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>'
     };
     const p = I[id] || I.prompt;
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
@@ -489,7 +480,7 @@
   /* ---------- 关系图（可点击节点） ---------- */
   const relSvg = document.getElementById("relation-svg");
   const relDetail = document.getElementById("relation-detail");
-  const relColors = { user:"#60a5fa", prompt:"#4cc2ff", skill:"#a78bfa", agent:"#34d399", mcp:"#60a5fa", token:"#f472b6", result:"#fbbf24", context:"#c084fc" };
+  const relColors = { user:"#60a5fa", prompt:"#4cc2ff", skill:"#a78bfa", agent:"#34d399", mcp:"#60a5fa", token:"#f472b6", result:"#fbbf24" };
 
   function buildRelation() {
     const w = 360, nh = 46, gap = 26, pad = 10;
@@ -1181,7 +1172,6 @@
   // 5) 更新日志
   function renderChangelog() {
     const log = [
-      { date: "2026-07-16", title: "v2.3 · 新增第 6 个核心概念 Context", desc: "核心概念从 5 个扩至 6 个：新增 Context（上下文）——讲解上下文窗口、上下文工程、长文本『中间迷失』陷阱，及其与 Prompt/Skill/Agent/MCP/Token 的关系；关系图与概览概念链同步更新，对比表与延展模块亦补充 Context 视角。" },
       { date: "2026-07-16", title: "v2.1 · 避坑 + 多模态", desc: "新增 🛡 避坑指南（8 个真实风险：幻觉 / 隐私 / 过度授权 / 订阅陷阱等，附正确做法与口诀）与 🎨 多模态创作（12 个图像 / 视频 / 音乐工具：Midjourney / 可灵 / Suno / HeyGen 等，按类型与地区筛选、可加入对比）。全局搜索同步覆盖创作与避坑。" },
       { date: "2026-07-16", title: "v2 · 质感升级", desc: "新增深浅色切换（跟随系统 + 记忆）、阅读进度条、返回顶部、键盘快捷键（数字 1-9 切模块）、更新日志、概念线性图标、数据来源标注。" },
       { date: "2026-07-16", title: "v1.2 · AI 知识库模块", desc: "新增第⑦模块「AI 知识库 / PKM」：20 个产品（语雀 / 飞书 / IMA / Obsidian / Notion / Dify 等），含国内·海外·AI 原生·RAG 平台分类、热门筛选与暖金底色。" },
