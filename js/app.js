@@ -18,9 +18,30 @@
     changelog: document.getElementById("panel-changelog")
   };
   let currentTab = "overview";
+
+  /* ---------- 懒渲染：切到某模块时才渲染，首屏只加载概览，避免一次性渲染全部造成卡顿 ---------- */
+  const _rendered = { overview: true };
+  function ensureRendered(tab) {
+    if (_rendered[tab]) return;
+    _rendered[tab] = true;
+    switch (tab) {
+      case "models": renderModels(); break;
+      case "concepts": initConcepts(); break;
+      case "agents": renderAgents(); break;
+      case "insights": renderInsight(); break;
+      case "extensions": renderExt(); break;
+      case "toolkit": renderToolkit(); break;
+      case "knowledge": renderKnowledge(); break;
+      case "pitfalls": renderPitfalls(); break;
+      case "creative": renderCreative(); break;
+      case "changelog": renderChangelog(); break;
+    }
+  }
+
   function switchTab(tab) {
     if (!panels[tab]) return;
     currentTab = tab;
+    ensureRendered(tab); // 首次进入该模块时才渲染其内容
     topnav.querySelectorAll(".navbtn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
     const activeBtn = topnav.querySelector(".navbtn.active");
     if (activeBtn) activeBtn.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
@@ -161,10 +182,14 @@
   CONCEPTS.forEach(c => searchIndex.push({ type: "concepts", tab: "concepts", id: c.id, name: c.name, sub: "核心概念", cardId: null, gotoConcept: c.id, hay: (c.name + " " + c.oneLiner + " " + c.def + " " + c.points.join(" ")).toLowerCase() }));
 
   let srActive = -1;
+  // 安全：转义用户输入，避免把搜索词直接当 HTML 注入（XSS）
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
   function renderSearch(q) {
     const hits = searchIndex.filter(x => x.hay.includes(q)).slice(0, 12);
     srActive = -1;
-    if (!hits.length) { searchResultsEl.innerHTML = `<div class="sr-empty">没找到「${q}」相关结果</div>`; searchResultsEl.classList.add("show"); return; }
+    if (!hits.length) { searchResultsEl.innerHTML = `<div class="sr-empty">没找到「${escapeHtml(q)}」相关结果</div>`; searchResultsEl.classList.add("show"); return; }
     searchResultsEl.innerHTML = hits.map((h, i) => `
       <div class="sr-item" data-i="${i}">
         <span class="sr-type ${h.type}">${TYPE_LABEL[h.type]}</span>
@@ -195,10 +220,13 @@
     const el = document.getElementById(item.cardId);
     if (el) flashCard(el);
   }
+  let searchTimer = null;
   searchInput.addEventListener("input", () => {
     const q = searchInput.value.trim().toLowerCase();
-    if (!q) { searchResultsEl.classList.remove("show"); searchResultsEl.innerHTML = ""; return; }
-    renderSearch(q);
+    if (!q) { clearTimeout(searchTimer); searchResultsEl.classList.remove("show"); searchResultsEl.innerHTML = ""; return; }
+    // 防抖：连续输入时只在停顿 120ms 后过滤一次，减少无谓的重复渲染
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => renderSearch(q), 120);
   });
   searchInput.addEventListener("keydown", e => {
     const items = [...searchResultsEl.querySelectorAll(".sr-item")];
@@ -308,7 +336,7 @@
   document.getElementById("model-search").addEventListener("input", e => {
     state.q = e.target.value.trim(); renderModels();
   });
-  renderModels();
+  // 首屏不立即渲染，改由 ensureRendered("models") 懒渲染
 
   /* ===================== 模块二：概念 ===================== */
   const tabsEl = document.getElementById("concept-tabs");
@@ -493,11 +521,14 @@
     const d = FLOW.find(f => f.id === id);
     if (d) relDetail.innerHTML = `<h4>${d.label}</h4><p>${d.desc}</p>`;
   }
-  buildRelation();
-  // 默认选中 Agent 节点做演示
-  const defNode = relSvg.querySelector('[data-id="agent"]');
-  if (defNode) { defNode.classList.add("active"); const d = FLOW.find(f => f.id === "agent"); relDetail.innerHTML = `<h4>${d.label}</h4><p>${d.desc}</p>`; }
-  renderConcept(); // 关系图就绪后再首渲染概念（含联动高亮）
+  // 概念模块初始化（懒渲染：首次进入 concepts tab 时才执行）
+  function initConcepts() {
+    buildRelation();
+    // 默认选中 Agent 节点做演示
+    const defNode = relSvg.querySelector('[data-id="agent"]');
+    if (defNode) { defNode.classList.add("active"); const d = FLOW.find(f => f.id === "agent"); relDetail.innerHTML = `<h4>${d.label}</h4><p>${d.desc}</p>`; }
+    renderConcept(); // 关系图就绪后再首渲染概念（含联动高亮）
+  }
 
   /* ===================== 模块三：Agent ===================== */
   const agentGrid = document.getElementById("agent-grid");
@@ -572,7 +603,7 @@
   document.getElementById("agent-search").addEventListener("input", e => {
     agentState.q = e.target.value.trim(); renderAgents();
   });
-  renderAgents();
+  // 懒渲染：由 ensureRendered("agents") 首次触发
 
   /* ===================== 模块七：AI 知识库 / PKM ===================== */
   const kbGrid = document.getElementById("kb-grid");
@@ -651,7 +682,7 @@
   document.getElementById("kb-search").addEventListener("input", e => {
     kbState.q = e.target.value.trim(); renderKnowledge();
   });
-  renderKnowledge();
+  // 懒渲染：由 ensureRendered("knowledge") 首次触发
 
   /* ===================== 模块四：AI 全景洞察 ===================== */
   const insTabsEl = document.getElementById("insight-tabs");
@@ -731,7 +762,7 @@
     const b = e.target.closest(".ctab"); if (!b) return;
     activeInsight = b.dataset.id; renderInsight();
   });
-  renderInsight();
+  // 懒渲染：由 ensureRendered("insights") 首次触发
 
   /* ===================== 模块四-B：进阶延展（11 个内容模块） ===================== */
   const extTabsEl = document.getElementById("ext-tabs");
@@ -750,7 +781,7 @@
     const b = e.target.closest(".ctab"); if (!b) return;
     activeExt = b.dataset.id; renderExt();
   });
-  renderExt();
+  // 懒渲染：由 ensureRendered("extensions") 首次触发
 
   /* ===================== 模块五：工具箱（5 个交互工具） ===================== */
   const toolkitTabsEl = document.getElementById("toolkit-tabs");
@@ -956,10 +987,7 @@
     const b = e.target.closest(".ctab"); if (!b) return;
     activeTool = b.dataset.id; renderToolkit();
   });
-  renderToolkit();
-
-  // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents / #insights）
-  applyHash();
+  // 懒渲染：由 ensureRendered("toolkit") 首次触发
 
   /* ===================== 避坑指南 ===================== */
   const pfGrid = document.getElementById("pf-grid");
@@ -1000,7 +1028,7 @@
   document.getElementById("pf-search").addEventListener("input", e => {
     pfState.q = e.target.value.trim(); renderPitfalls();
   });
-  renderPitfalls();
+  // 懒渲染：由 ensureRendered("pitfalls") 首次触发
 
   /* ===================== 多模态创作 ===================== */
   const crGrid = document.getElementById("cr-grid");
@@ -1074,7 +1102,7 @@
   document.getElementById("cr-search").addEventListener("input", e => {
     crState.q = e.target.value.trim(); renderCreative();
   });
-  renderCreative();
+  // 懒渲染：由 ensureRendered("creative") 首次触发
 
   /* ===================== 全局体验增强（v2） ===================== */
   // 1) 数据来源标注：每个带 sec-head 的面板加"内容基准"小字
@@ -1102,11 +1130,19 @@
   // 3) 阅读进度条 + 返回顶部
   const progress = document.getElementById("progress");
   const toTop = document.getElementById("to-top");
-  function onScroll() {
+  let scrollTicking = false;
+  function updateScroll() {
+    scrollTicking = false;
     const h = document.documentElement.scrollHeight - window.innerHeight;
     const p = h > 0 ? (window.scrollY / h) * 100 : 0;
     progress.style.width = p + "%";
     toTop.classList.toggle("show", window.scrollY > 400);
+  }
+  // rAF 节流：每帧最多计算一次，避免每个滚动事件都读 scrollHeight 触发强制重排（卡顿主因）
+  function onScroll() {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(updateScroll);
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
@@ -1151,6 +1187,9 @@
         <div class="cl-desc">${x.desc}</div>
       </div>`).join("");
   }
-  renderChangelog();
+  // 懒渲染：由 ensureRendered("changelog") 首次触发
+
+  /* 所有模块定义完毕后，处理初始 URL hash（如 #creative 会懒渲染对应模块） */
+  applyHash();
 
 })();
