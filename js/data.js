@@ -1467,3 +1467,195 @@ const KNOWLEDGES = [
     note: "复杂文档 RAG 的强手，偏技术向。"
   }
 ];
+
+/* ===================== 避坑案例库（PITFALLS） ===================== */
+const PITFALLS = [
+  {
+    id: "hallucination", title: "把 AI 的『编造』当事实", emoji: "🌀", level: "高危", cat: "幻觉",
+    scene: "写方案 / 论文 / 法律材料时，直接复制 AI 给的『数据、法条、参考文献』。",
+    what: "AI 会一本正经地编造不存在的论文、法条、统计数字和引用链接（幻觉），且语气极度自信。",
+    result: "方案被客户打脸、论文被撤、法律文件出错，可信度崩塌。",
+    fix: "凡用于『对外 / 决策 / 署名』的内容，关键事实必须二次核实；让 AI 给出来源链接并自己点开验证；把 AI 当『起草助手』而非『事实库』。",
+    motto: "AI 给的数字和引用，先验证再使用。"
+  },
+  {
+    id: "privacy", title: "把机密 / 隐私直接贴进对话框", emoji: "🔓", level: "高危", cat: "隐私",
+    scene: "把客户名单、合同、病历、公司代码、私钥贴进公开 AI 对话。",
+    what: "默认情况下对话内容可能被厂商留存或用于训练，敏感数据就此『出域』，且可能被员工或第三方看到。",
+    result: "数据泄露、合规违规（个保法 / GDPR）、被勒索或索赔。",
+    fix: "建立『能贴什么』红线：绝不贴密钥 / 个人敏感信息 / 未公开商业数据；用脱敏或假数据；企业走私有化部署或签过数据协议的合规通道；敏感任务用本地模型。",
+    motto: "贴进对话框前，问自己『这能上新闻吗』。"
+  },
+  {
+    id: "overpermission", title: "给 Agent 全自动 + 全权限", emoji: "🕹️", level: "高危", cat: "授权",
+    scene: "把『可读写数据库 / 能发邮件 / 能转账』的 API 全权交给一个自动 Agent，还开『全自动执行』。",
+    what: "Agent 可能误解指令，删库、误发、错误调用付费 API；越权操作难回滚。",
+    result: "生产事故、资损、误伤客户。",
+    fix: "最小权限原则：默认『建议模式』（human-in-the-loop），只在高风险动作前加确认；API 用只读 / 沙箱子账号；设额度与审计日志。",
+    motto: "Agent 的权限，宁小勿大，关键动作人确认。"
+  },
+  {
+    id: "subscription", title: "免费试用变自动扣费", emoji: "💳", level: "中危", cat: "订阅",
+    scene: "图方便绑了信用卡开『7 天免费试用』，忘了取消。",
+    what: "多数 AI 订阅默认到期自动续费，年付常难退、客服难找。",
+    result: "默默被扣一笔年费，退款扯皮。",
+    fix: "试用当天就在日历设『到期前 1 天取消』提醒；优先用可月付 / 可随时停的；用虚拟卡设额度上限。",
+    motto: "开试用当天就定好『取消闹钟』。"
+  },
+  {
+    id: "blindtrust", title: "拿 AI 结论直接做重大决定", emoji: "╳️", level: "高危", cat: "盲信",
+    scene: "把 AI 的医疗 / 法律 / 投资 / 留学建议当成专家意见直接用。",
+    what: "AI 不持有执业资质，回答可能过时、地域不符或笼统。",
+    result: "误诊、违规、亏钱、错过时机。",
+    fix: "重大决定一定找持证人类专家复核；把 AI 当『信息整理 / 初稿』，不替代专业判断。",
+    motto: "AI 不持证，重决定找人复核。"
+  },
+  {
+    id: "promptleak", title: "把密钥 / 系统提示词写进公开 Prompt", emoji: "🗝️", level: "中危", cat: "隐私",
+    scene: "在公开分享的 prompt / 工作流里硬编码 API Key，或让用户输入能直接改写系统指令。",
+    what: "别人能读走密钥，或通过提示注入（prompt injection）套出系统提示、绕过护栏。",
+    result: "密钥被盗刷、提示词被抄、行为被绕过。",
+    fix: "密钥走环境变量 / 密钥管理，绝不进 prompt；对外部输入做校验，不让用户输入直接改写系统指令。",
+    motto: "密钥进环境变量，提示词别裸奔。"
+  },
+  {
+    id: "copyright", title: "AI 生成内容直接商用", emoji: "©️", level: "中危", cat: "版权",
+    scene: "用 AI 图 / 音乐 / 文案做商品、广告、公众号营利，不标注、不分清权属。",
+    what: "训练数据权属、生成物版权在不同法域仍模糊；某些平台禁止 AI 内容参赛或商用。",
+    result: "侵权投诉、下架、纠纷。",
+    fix: "商用前看清工具条款与当地法规；品牌 / 商用关键素材留人工审核与原创证据；可标注『AI 辅助创作』。",
+    motto: "商用先看清条款，关键素材留人审。"
+  },
+  {
+    id: "dependency", title: "过度依赖，自己不动脑", emoji: "🧠", level: "低危", cat: "依赖",
+    scene: "啥都问 AI，写作 / 思考 / 学习全外包，不再自己查证与练习。",
+    what: "长期『认知外包』会削弱独立判断与底层能力（写作、检索、推理）。",
+    result: "离开 AI 就不会干活，能力退化。",
+    fix: "把 AI 当『陪练』而非『代练』：先自己想 / 写一版，再让 AI 挑刺补充；刻意保留『无 AI』练习。",
+    motto: "AI 当陪练，别当代练。"
+  }
+];
+
+/* ===================== 多模态创作工具（CREATIVES） ===================== */
+const CREATIVES = [
+  {
+    id: "midjourney", name: "Midjourney", vendor: "Midjourney", country: "us", kind: "image",
+    badge: "图像生成标杆",
+    summary: "以艺术感和出图质量著称的文生图工具，社区活跃，支持更精准的提示词与局部重绘。",
+    forWhom: "做概念图、海报、插画、审美要求高的创作者。",
+    features: ["出图审美与质感业界标杆", "支持角色一致、局部重绘", "Discord / 网页端均可使用"],
+    link: "可通过第三方桥接把出图接进自动化工作流。",
+    site: "https://www.midjourney.com", price: "订阅制，约 10 美元 / 月起",
+    note: "强在『好看』，中文提示词需写清；无长期免费档。"
+  },
+  {
+    id: "dreamina", name: "即梦 Dreamina", vendor: "字节跳动", country: "cn", kind: "mix",
+    badge: "图像 + 视频一体",
+    summary: "字节的 AI 创作平台，文生图、文生视频、数字人一站式，中文体验顺。",
+    forWhom: "国内做短视频、电商素材、社媒图文的人。",
+    features: ["图像 + 视频 + 对口型数字人一体", "中文提示词友好，出片快", "与剪映生态打通"],
+    link: "作字节系创作工具，可接剪映等流转。",
+    site: "https://dreamina.capcut.com", price: "有免费额度，会员订阅",
+    note: "国内综合创作首选之一，视频时长偏短需拼接。"
+  },
+  {
+    id: "kling", name: "可灵 Kling", vendor: "快手", country: "cn", kind: "video",
+    badge: "视频生成强手",
+    summary: "快手推出的文生视频 / 图生视频，运动连贯性与时长表现强，曾惊艳海外。",
+    forWhom: "做 AI 短片、广告分镜、动态素材的创作者。",
+    features: ["运动自然、不易变形", "支持图生视频与镜头控制", "可生成较长片段"],
+    link: "视频资产可接剪辑流水线。",
+    site: "https://klingai.com", price: "有免费额度，会员订阅",
+    note: "国内视频生成第一梯队，复杂提示仍会翻车。"
+  },
+  {
+    id: "runway", name: "Runway", vendor: "Runway", country: "us", kind: "video",
+    badge: "专业视频工具箱",
+    summary: "面向专业创作的视频生成 / 编辑套件，能力强但偏贵。",
+    forWhom: "专业视频团队、做实验性影像的创作者。",
+    features: ["视频生成质量高", "动作迁移、视频擦除等编辑工具多", "支持 API 接入"],
+    link: "提供 API，可接自动化视频流水线。",
+    site: "https://runwayml.com", price: "订阅制，专业档较贵",
+    note: "功能最全但学习曲线陡、价格高。"
+  },
+  {
+    id: "suno", name: "Suno", vendor: "Suno", country: "us", kind: "audio",
+    badge: "AI 写歌",
+    summary: "输入歌词 / 风格即可生成带人声的完整歌曲，降低了音乐创作门槛。",
+    forWhom: "想快速出 demo、做视频 BGM、玩音乐的人。",
+    features: ["一句话生成带唱的完整曲", "多种风格 / 人声可选", "可续写与编辑段落"],
+    link: "可作音频资产源接进视频工作流。",
+    site: "https://suno.com", price: "免费额度 + 订阅",
+    note: "商用版权在不同法域仍模糊，商用前看清条款。"
+  },
+  {
+    id: "heygen", name: "HeyGen", vendor: "HeyGen", country: "us", kind: "video",
+    badge: "数字人视频",
+    summary: "用一张照片 + 文案生成会说话的数字人视频，多语言口播利器。",
+    forWhom: "做多语言产品介绍、培训、营销口播的人。",
+    features: ["照片生成数字人讲稿视频", "多语言翻译口播、音色克隆", "模板化批量产出"],
+    link: "可 API 批量生成口播视频。",
+    site: "https://www.heygen.com", price: "按额度 / 订阅",
+    note: "适合标准化口播，真人质感仍有限。"
+  },
+  {
+    id: "sd", name: "Stable Diffusion", vendor: "Stability AI / 开源", country: "open", kind: "image",
+    badge: "开源可私有化",
+    summary: "开源文生图基座，可本地部署、自由微调，自由度最高。",
+    forWhom: "要可控、可私有化、自己炼模型的开发者 / 画师。",
+    features: ["完全开源，可本地离线跑", "LoRA / ControlNet 生态丰富", "数据不出本机"],
+    link: "可本地部署作私有图像服务。",
+    site: "https://stability.ai", price: "开源免费（云端托管另计）",
+    note: "上手成本最高，但可控性与隐私最佳。"
+  },
+  {
+    id: "wanxiang", name: "通义万相", vendor: "阿里", country: "cn", kind: "image",
+    badge: "阿里文生图",
+    summary: "阿里通义系文生图 / 涂鸦生成，中文理解与中文审美适配好。",
+    forWhom: "国内做电商图、国风插画、营销素材的人。",
+    features: ["中文提示词理解好", "国风 / 电商场景适配", "与通义生态打通"],
+    link: "可接通义大模型工作流。",
+    site: "https://tongyi.aliyun.com", price: "有免费额度，按量 / 订阅",
+    note: "中文场景顺手，重度用看套餐。"
+  },
+  {
+    id: "sora", name: "Sora", vendor: "OpenAI", country: "us", kind: "video",
+    badge: "OpenAI 视频",
+    summary: "OpenAI 的文生视频，时长与一致性领先，但开放节奏与额度受限。",
+    forWhom: "追前沿、做高质量 AI 短片的创作者。",
+    features: ["长时长、强一致性", "理解复杂指令", "与 ChatGPT 生态联动"],
+    link: "随 OpenAI 生态接入。",
+    site: "https://openai.com/sora", price: "随 ChatGPT 订阅档位",
+    note: "额度与开放节奏受控，不是随时敞开。"
+  },
+  {
+    id: "pixverse", name: "PixVerse", vendor: "PixVerse", country: "cn", kind: "video",
+    badge: "轻量视频生成",
+    summary: "操作轻、出片快的文生视频，模板与特效多，适合社媒玩梗。",
+    forWhom: "做短视频、表情包、社媒特效的轻创作者。",
+    features: ["上手快、模板多", "支持图生视频与特效", "移动端友好"],
+    link: "可接轻量视频流水线。",
+    site: "https://pixverse.ai", price: "免费额度 + 订阅",
+    note: "偏娱乐 / 社媒向，专业质感不如 Runway。"
+  },
+  {
+    id: "udio", name: "Udio", vendor: "Udio", country: "us", kind: "audio",
+    badge: "AI 音乐",
+    summary: "与 Suno 类似的高质量 AI 写歌工具，风格可控、人声自然。",
+    forWhom: "做音乐 demo、视频配乐的人。",
+    features: ["生成带人声完整曲", "风格 / 结构可控", "可 remix"],
+    link: "可作音频源接视频工作流。",
+    site: "https://udio.com", price: "免费额度 + 订阅",
+    note: "与 Suno 二选一即可，商用看清版权。"
+  },
+  {
+    id: "hailuo", name: "海螺 AI", vendor: "MiniMax", country: "cn", kind: "mix",
+    badge: "视频 + 语音",
+    summary: "MiniMax 的 C 端创作：海螺视频（视频生成）+ 海螺语音（配音 / 声音克隆），中文强。",
+    forWhom: "国内做视频配音、短剧、中文语音的人。",
+    features: ["中文语音克隆自然", "视频生成质量在线", "语音 + 视频一体"],
+    link: "语音 / 视频可接自动化流水线。",
+    site: "https://hailuoai.com", price: "有免费额度，订阅",
+    note: "中文语音是亮点，视频与头部尚有差距。"
+  }
+];
