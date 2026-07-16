@@ -1178,6 +1178,7 @@ const KNOWLEDGES = [
   },
   {
     id: "feishu",
+    hot: true,
     name: "飞书知识库",
     vendor: "字节跳动",
     country: "cn",
@@ -1300,7 +1301,6 @@ const KNOWLEDGES = [
   },
   {
     id: "logseq",
-    hot: true,
     name: "Logseq",
     vendor: "Logseq",
     country: "us",
