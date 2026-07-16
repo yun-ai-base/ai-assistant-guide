@@ -403,7 +403,7 @@
     const head = `<div class="agent-board-head">AI 知识库 / PKM · 共 ${list.length} 个</div>`;
     kbGrid.innerHTML = (list.length ? head : "") + (list.length
       ? list.map(k => `
-        <article class="agent-card">
+        <article class="agent-card${k.hot ? " hot" : ""}">
           <div class="ac-head">
             <div>
               <div class="ac-name">${k.name}</div>
@@ -411,6 +411,7 @@
             </div>
             <div class="ac-badges">
               <span class="ac-badge">${k.badge}</span>
+              ${k.hot ? '<span class="kb-hot">★ 热门</span>' : ""}
               <span class="kb-kind" data-kind="${k.kind}">${k.kind === "pkm" ? "传统 PKM" : k.kind === "ai-native" ? "AI 原生" : "RAG 平台"}</span>
             </div>
           </div>
