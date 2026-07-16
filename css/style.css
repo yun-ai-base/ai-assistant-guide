@@ -57,6 +57,69 @@
   border-radius: 8px; padding: 6px 11px; cursor: pointer; font-size: 13px; white-space: nowrap; }
 .icon-btn:hover { background: var(--card-hover); }
 /* ===== 快捷键提示 toast ===== */
+/* ===== 顶部工具区（搜索 / 对比 / 主题） ===== */
+.header-tools { display: flex; align-items: center; gap: 8px; order: 2; }
+.topnav { flex: 1 1 100%; order: 3; }
+.search-wrap { position: relative; flex: 0 1 260px; }
+.global-search { width: 100%; padding: 7px 12px; border-radius: 9px; border: 1px solid var(--border);
+  background: var(--bg-soft); color: var(--text); font-size: 13px; }
+.global-search:focus { outline: none; border-color: var(--accent); }
+.search-results { position: absolute; top: calc(100% + 6px); right: 0; width: 320px; max-height: 60vh;
+  overflow-y: auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 6px; z-index: 90; display: none; }
+.search-results.show { display: block; }
+.sr-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.sr-item:hover, .sr-item.active { background: var(--card-hover); }
+.sr-type { font-size: 11px; color: #fff; background: var(--accent); border-radius: 6px; padding: 1px 6px; flex: 0 0 auto; }
+.sr-type.agents { background: var(--accent3); }
+.sr-type.knowledge { background: var(--accent2); }
+.sr-type.concepts { background: var(--warn); }
+.sr-name { font-size: 13px; color: var(--text); }
+.sr-sub { font-size: 12px; color: var(--text-faint); margin-left: auto; }
+.sr-empty { padding: 12px; color: var(--text-faint); font-size: 13px; text-align: center; }
+#compare-count { display: inline-block; min-width: 16px; text-align: center; margin-left: 2px;
+  background: var(--accent); color: #fff; border-radius: 9px; font-size: 11px; padding: 0 5px; }
+/* ===== 卡片：对比按钮 ===== */
+.cmp-add { position: absolute; top: 10px; right: 10px; z-index: 5; border: 1px solid var(--border);
+  background: var(--bg-soft); color: var(--text-dim); border-radius: 8px; font-size: 12px;
+  padding: 4px 9px; cursor: pointer; transition: all .15s; }
+.cmp-add:hover { color: var(--text); border-color: var(--accent); }
+.cmp-add.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.model-card, .agent-card { position: relative; }
+/* ===== 对比弹层 ===== */
+.compare-modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 120;
+  display: none; align-items: flex-end; justify-content: center; }
+.compare-modal.show { display: flex; }
+.compare-sheet { width: min(960px, 100%); max-height: 86vh; background: var(--card);
+  border: 1px solid var(--border); border-radius: 16px 16px 0 0; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden; }
+.compare-head { display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.compare-head h3 { font-size: 15px; font-weight: 500; color: var(--text); }
+.compare-close { background: none; border: none; color: var(--text-dim); font-size: 22px; cursor: pointer; line-height: 1; }
+.compare-grid { display: flex; gap: 14px; padding: 16px 18px; overflow-x: auto; }
+.cmp-card { flex: 0 0 230px; border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.cmp-card h4 { font-size: 15px; color: var(--text); margin-bottom: 2px; }
+.cmp-card .cmp-vendor { font-size: 12px; color: var(--text-faint); margin-bottom: 10px; }
+.cmp-row { font-size: 13px; color: var(--text-dim); padding: 5px 0; border-top: 1px dashed var(--border); }
+.cmp-row b { color: var(--text); font-weight: 500; }
+.cmp-empty { padding: 40px; text-align: center; color: var(--text-faint); font-size: 14px; }
+/* ===== 搜索命中高亮 ===== */
+.search-hit { animation: hitFlash 1.6s ease; }
+@keyframes hitFlash { 0%,40% { box-shadow: 0 0 0 2px var(--accent), var(--shadow); } 100% { box-shadow: var(--shadow); } }
+
+/* ===== 移动端适配 ===== */
+@media (max-width: 880px) {
+  .header-tools { flex: 1 1 100%; order: 4; flex-wrap: wrap; }
+  .search-wrap { flex: 1 1 100%; }
+  .global-search { width: 100%; }
+  .search-results { left: 0; right: 0; width: auto; }
+  .compare-sheet { border-radius: 0; max-height: 100vh; height: 100%; }
+}
+@media (max-width: 600px) {
+  .cmp-card { flex: 0 0 78vw; }
+}
+
 .toast { position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%) translateY(8px);
   background: var(--card); border: 1px solid var(--border); color: var(--text);
   padding: 8px 14px; border-radius: 10px; font-size: 13px; opacity: 0;
@@ -164,7 +227,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 @media (hover: hover) {
   .model-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow); }
 }
-.model-card .flag { position: absolute; top: 0; right: 0; font-size: 11px; padding: 4px 12px; border-bottom-left-radius: 10px; font-weight: 600; }
+.model-card .flag { display: inline-block; font-size: 11px; padding: 1px 9px; border-radius: 999px; font-weight: 600; vertical-align: middle; margin-left: 8px; }
 .flag.us { background: rgba(96,165,250,.18); color: var(--us); }
 .flag.cn { background: rgba(244,114,182,.18); color: var(--cn); }
 .mc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
@@ -264,7 +327,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 @media (hover: hover) {
   .agent-card:hover { border-color: var(--accent2); transform: translateY(-3px); box-shadow: var(--shadow); }
 }
-.ac-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.ac-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding-right: 80px; }
 .ac-name { font-size: 18px; font-weight: 700; }
 .ac-vendor { font-size: 12.5px; color: var(--text-dim); }
 .ac-badge { font-size: 11px; background: rgba(167,139,250,.18); color: var(--accent2); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
@@ -468,4 +531,13 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .e2e-node { max-width: 100%; }
   .matrix { min-width: 520px; }
   .cb-aside { position: static; }
+}
+
+/* 对比卡片内移除按钮 */
+.cmp-remove { margin-top: 12px; width: 100%; border: 1px solid var(--border); background: var(--bg-soft); color: var(--text-dim); border-radius: 8px; padding: 7px; font-size: 12.5px; cursor: pointer; transition: .15s; }
+.cmp-remove:hover { color: #fff; background: #e5484d; border-color: #e5484d; }
+/* 移动端：角标与对比按钮微调 */
+@media (max-width: 600px) {
+  .ac-head { padding-right: 72px; }
+  .cmp-add { font-size: 11px; padding: 3px 7px; }
 }
