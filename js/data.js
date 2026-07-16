@@ -1332,7 +1332,6 @@ const KNOWLEDGES = [
   },
   {
     id: "roam",
-    hot: true,
     name: "Roam Research",
     vendor: "Roam",
     country: "us",
