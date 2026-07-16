@@ -251,7 +251,7 @@ const CONCEPTS = [
     layer: "最底层：所有能力的起点",
     myth: "误区一：『Prompt 越短越酷』——其实越具体越有用；误区二：『AI 应该懂我』——它只懂你写出来的，没写的它只能猜。",
     try: "复制这句对比效果：「你是有 10 年经验的运营。帮我写一条小红书标题，受众 25 岁女性，风格活泼，给 5 个选项并说明差异。」再对比你平时随便问的写法。",
-    related: "Skill（把好 Prompt 固化复用）、Agent（消费 Prompt 去执行任务）"
+    related: "Skill（把好 Prompt 固化复用）、Agent（消费 Prompt 去执行任务）、Context（是 Context 的种子，被组装进工作记忆）"
   },
   {
     id: "skill",
@@ -269,7 +269,7 @@ const CONCEPTS = [
     layer: "包装层：把 Prompt 沉淀为可复用能力",
     myth: "误区：『Skill 会自己思考』——它只是把预设流程 / 知识『喂』给模型，真正的推理还是模型做；Skill 强在『不跑题、不漏步骤』。",
     try: "在支持 Skill 的客户端说「用 Internal Comms 帮我写本周 3P 周报」，看它自动套模板、补结构。",
-    related: "Prompt（Skill 是 Prompt 的封装）、MCP（Skill 管方法论，MCP 管连接）"
+    related: "Prompt（Skill 是 Prompt 的封装）、MCP（Skill 管方法论，MCP 管连接）、Context（Skill 被固化进 Context）"
   },
   {
     id: "agent",
@@ -287,7 +287,7 @@ const CONCEPTS = [
     layer: "执行层：干活的『工人』",
     myth: "误区一：『Agent 啥都能干』——它擅长边界清晰、可验证的任务；误区二：『Agent 不会出错』——关键决策仍需人审。",
     try: "给 Manus / ChatGPT Agent 一个明确交付目标：「整理我 Gmail 里本周重要邮件，写成 3 条摘要发到 Slack」，观察它自主循环。",
-    related: "Prompt（任务入口）、Skill（方法论）、MCP（工具手）、Token（燃料）"
+    related: "Prompt（任务入口）、Skill（方法论）、MCP（工具手）、Token（燃料）、Context（每步读写的工作记忆）"
   },
   {
     id: "mcp",
@@ -305,7 +305,7 @@ const CONCEPTS = [
     layer: "集成层：工人手里的『万能工具接口』",
     myth: "误区一：『MCP 让 AI 变聪明』——它只解决『连得上』，聪明与否还是模型；误区二：『接了就安全』——需鉴权与最小权限。",
     try: "在 Claude Desktop 里连一个文件系统 MCP，然后说「读我桌面那个 notes.txt 并总结」，看它直接操作本地文件。",
-    related: "Agent（调用方）、Token（连接定义常驻上下文窗口）"
+    related: "Agent（调用方）、Token（连接定义常驻上下文窗口）、Context（往 Context 持续喂外部数据）"
   },
   {
     id: "token",
@@ -323,7 +323,25 @@ const CONCEPTS = [
     layer: "燃料层：一切运行的底层计量单位",
     myth: "误区一：『中文按字算 token』——其实是按子词拆分，不同模型规则不同；误区二：『token 越多越贵就一定越好』——要控上下文省成本。",
     try: "把同一段话分别丢进中英模型，看『用量 / 价格』统计，直观理解上下文窗口与计费。",
-    related: "MCP / Skill（都吃上下文窗口）、模型（窗口大小决定能记多少）"
+    related: "MCP / Skill（都吃上下文窗口）、模型（窗口大小决定能记多少）、Context（Context 的体量由 Token/窗口计量）"
+  },
+  {
+    id: "context",
+    name: "Context（上下文）",
+    icon: "🧠",
+    oneLiner: "AI 干活时『手边摊开的那份工作记忆』——指令、知识、历史全在里面。",
+    def: "Context（上下文）是模型在一次推理中『能看到的所有文字』的总和：你的指令、系统设定、被加载的 Skill、历史对话、以及 MCP 喂进来的工具数据，全部拼成一个『工作记忆』。模型每一步生成都只读这一份。2025–2026 流行的说法是『你不是在写 Prompt，你是在做 Context Engineering（上下文工程）』——把对的内容、以对的顺序、塞进有限的窗口，比单句 Prompt 重要得多。",
+    analogy: "像你桌面上摊开的那叠资料：左边任务卡（Prompt），中间操作手册（Skill），右边过往笔记（记忆），底下压着几个工具说明书（MCP）。AI 不记得桌面外的东西；桌面越大（上下文窗口）它越能顾全，但桌面塞太满也会找不到重点（中间迷失）。",
+    points: [
+      "本质：模型『此刻能看见的全部信息』，是 Prompt / Skill / Memory / MCP 的最终汇聚处",
+      "上下文窗口（如 Kimi ~20 万、Gemini ~100 万 token）决定这份记忆能有多大",
+      "Context Engineering：用对的顺序与结构组装上下文，是 Agent 时代的核心手艺",
+      "长文本有『中间迷失（Lost in the Middle）』陷阱：模型容易忽略中段内容"
+    ],
+    layer: "汇聚层：所有能力的『共同舞台』",
+    myth: "误区一：『只要 Prompt 写对就行』——窗口里还挤着记忆、工具 schema，排布不当照样翻车；误区二：『窗口越大越好』——更大窗口更贵、更易迷失，且并非所有模型都善用长上下文。",
+    try: "把同一篇长文档分别用『直接全文塞进上下文』和『先摘要 + 关键段落』两种问法，对比答案质量，体会 Context 组装的影响。",
+    related: "Prompt（是 Context 的种子）、Skill（固化进 Context 的方法论）、Agent（每步读写 Context）、MCP（往 Context 持续喂外部数据）、Token（Context 的计量单位）"
   }
 ];
 
@@ -331,6 +349,7 @@ const CONCEPTS = [
 const FLOW = [
   { id: "user", label: "用户指令", desc: "你说：『帮我整理今天邮件，挑重要的发摘要到群里』——这是最外层的 Prompt。" },
   { id: "prompt", label: "Prompt", desc: "把目标说清楚。越结构化（角色+任务+格式），AI 越懂你。" },
+  { id: "context", label: "Context 组装", desc: "系统把你的指令（Prompt）+ 匹配的 Skill（身份/流程）+ 历史记忆 + 工具 schema 拼成一份『工作记忆』，这就是 Context。Agent 每步执行都读它、写它；上下文窗口（如 20 万 token）决定这份记忆能有多大。" },
   { id: "skill", label: "Skill 加载", desc: "系统自动匹配『邮件整理技能包』，补齐『什么是重要邮件』的判断标准与摘要格式（SOP）。" },
   { id: "agent", label: "Agent 执行", desc: "Agent 本体接到任务：打开邮箱→逐封分析→筛选→生成摘要→发群，自主跑完循环。" },
   { id: "mcp", label: "MCP 连接", desc: "『打开邮箱』『发飞书消息』等操作，全部通过 MCP 协议统一连接外部系统。" },
@@ -873,10 +892,10 @@ const INSIGHTS = [
 const EXTENSIONS = [
   {
     id: "compare", icon: "⚖️", name: "Prompt / Skill / MCP / Agent 怎么选",
-    oneLiner: "四个概念最容易混。一张表说清『谁解决什么问题』，该用哪个。",
-    def: "这几个词常被一起提，但层次完全不同：Prompt 是『怎么跟 AI 说话』，Skill 是『把话术固化复用』，MCP 是『让 AI 连上外部工具』，Agent 是『让 AI 自己动手干活』。选错层，问题就解决不了。",
+    oneLiner: "核心概念里最易混的四个（外加 Context 是它们的共同舞台）。一张表说清『谁解决什么问题』，该用哪个。",
+    def: "这几个词常被一起提，但层次完全不同：Prompt 是『怎么跟 AI 说话』，Skill 是『把话术固化复用』，MCP 是『让 AI 连上外部工具』，Agent 是『让 AI 自己动手干活』。选错层，问题就解决不了。2026 年中又补上第 6 个核心概念 Context——它是这五个的『共同舞台』，详见概念页。",
     layer: "概念辨析 · 选型地图",
-    takeaway: "按『我要解决什么』倒推：说话→Prompt；复用→Skill；连接→MCP；执行→Agent。",
+    takeaway: "按『我要解决什么』倒推：说话→Prompt；复用→Skill；连接→MCP；执行→Agent；组织记忆→Context。",
     kind: "compare",
     compare: {
       headers: ["维度", "Prompt", "Skill", "MCP", "Agent"],
@@ -888,7 +907,7 @@ const EXTENSIONS = [
         { k: "举个例子", v: ["『写 5 个小红书标题』", "『用 Internal Comms 写周报』", "『连上日历/邮箱』", "『Manus 整理我的邮件』"] }
       ]
     },
-    related: "关联：概念页五个概念逐一讲解；模块三 Agent 是它们的『集大成者』。"
+    related: "关联：概念页六个概念逐一讲解；模块三 Agent 是它们的『集大成者』。"
   },
   {
     id: "benchmark", icon: "📊", name: "AI 评测 / Benchmark 怎么读",
@@ -958,7 +977,7 @@ const EXTENSIONS = [
     layer: "总览 · 把全站串成网",
     takeaway: "一次『帮我干活』背后是整条链：人定目标，Agent 执行，Skill/MCP 是手脚，Token 是燃料。",
     kind: "flow",
-    related: "关联：概念页五个概念、模块三 Agent、本页其他延展。"
+    related: "关联：概念页六个概念、模块三 Agent、本页其他延展。"
   },
   {
     id: "timeline", icon: "🕰️", name: "AI 发展时间线",
