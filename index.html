@@ -30,6 +30,7 @@
       <button class="navbtn" data-tab="insights">④ 全景洞察</button>
       <button class="navbtn" data-tab="toolkit">⑤ 工具箱</button>
       <button class="navbtn" data-tab="extensions">⑥ 进阶延展</button>
+      <button class="navbtn" data-tab="knowledge">⑦ AI 知识库</button>
     </nav>
   </header>
 
@@ -159,6 +160,31 @@
       </div>
       <div class="concept-tabs" id="ext-tabs"></div>
       <div class="insight-body" id="ext-body"></div>
+    </section>
+
+    <!-- 模块七：AI 知识库 / PKM -->
+    <section class="panel" id="panel-knowledge">
+      <div class="sec-head">
+        <h2>⑦ AI 知识库 / PKM</h2>
+        <p>从「记笔记」到「建 AI 知识库」：传统双链笔记、AI 原生知识库、RAG 平台三类，点开卡片看特点、适合谁、怎么和 MCP/RAG 联动。</p>
+      </div>
+      <div class="filters">
+        <div class="filter-group" id="kb-country">
+          <span class="fg-label">地区</span>
+          <button class="fbtn active" data-country="all">全部</button>
+          <button class="fbtn" data-country="cn">国内</button>
+          <button class="fbtn" data-country="us">海外</button>
+        </div>
+        <div class="filter-group" id="kb-kind">
+          <span class="fg-label">类型</span>
+          <button class="fbtn active" data-kind="all">全部</button>
+          <button class="fbtn" data-kind="pkm">传统 PKM</button>
+          <button class="fbtn" data-kind="ai-native">AI 原生</button>
+          <button class="fbtn" data-kind="rag">RAG 平台</button>
+        </div>
+        <input type="search" id="kb-search" class="search-input" placeholder="搜索知识库…" />
+      </div>
+      <div class="agent-grid" id="kb-grid"></div>
     </section>
   </main>
 
