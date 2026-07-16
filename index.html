@@ -31,11 +31,13 @@
       <button class="navbtn" data-tab="toolkit">⑤ 工具箱</button>
       <button class="navbtn" data-tab="extensions">⑥ 进阶延展</button>
       <button class="navbtn" data-tab="knowledge">⑦ AI 知识库</button>
-      <button class="navbtn" data-tab="changelog">⑧ 更新日志</button>
+      <button class="navbtn" data-tab="pitfalls">🛡 避坑指南</button>
+      <button class="navbtn" data-tab="creative">🎨 多模态创作</button>
+      <button class="navbtn" data-tab="changelog">📋 更新日志</button>
     </nav>
     <div class="header-tools">
       <div class="search-wrap">
-        <input type="search" id="global-search" class="global-search" placeholder="搜索模型 / Agent / 概念 / 知识库…" aria-label="全局搜索" />
+        <input type="search" id="global-search" class="global-search" placeholder="搜索模型 / Agent / 概念 / 知识库 / 创作 / 避坑…" aria-label="全局搜索" />
         <div class="search-results" id="search-results"></div>
       </div>
       <button id="compare-btn" class="icon-btn" title="对比收藏夹">⚖ 对比<span id="compare-count">0</span></button>
@@ -197,6 +199,56 @@
         <input type="search" id="kb-search" class="search-input" placeholder="搜索知识库…" />
       </div>
       <div class="agent-grid" id="kb-grid"></div>
+    </section>
+
+    <!-- 模块：避坑指南 -->
+    <section class="panel" id="panel-pitfalls">
+      <div class="sec-head">
+        <h2>🛡 避坑指南</h2>
+        <p>用 AI 最该先知道的是「别踩什么坑」：幻觉、隐私、过度授权、订阅陷阱…… 每张卡片一个真实风险，附正确做法与一句口诀。</p>
+      </div>
+      <div class="filters">
+        <div class="filter-group" id="pf-cat">
+          <span class="fg-label">类型</span>
+          <button class="fbtn active" data-cat="all">全部</button>
+          <button class="fbtn" data-cat="幻觉">幻觉</button>
+          <button class="fbtn" data-cat="隐私">隐私</button>
+          <button class="fbtn" data-cat="授权">授权</button>
+          <button class="fbtn" data-cat="订阅">订阅</button>
+          <button class="fbtn" data-cat="盲信">盲信</button>
+          <button class="fbtn" data-cat="版权">版权</button>
+          <button class="fbtn" data-cat="依赖">依赖</button>
+        </div>
+        <input type="search" id="pf-search" class="search-input" placeholder="搜索坑点…" />
+      </div>
+      <div class="pf-grid" id="pf-grid"></div>
+    </section>
+
+    <!-- 模块：多模态创作 -->
+    <section class="panel" id="panel-creative">
+      <div class="sec-head">
+        <h2>🎨 多模态创作</h2>
+        <p>从「文字」到「图像 / 视频 / 音乐」：Midjourney、可灵、Suno、HeyGen…… 点开看能做什么、适合谁、怎么接进你的工作流。</p>
+      </div>
+      <div class="filters">
+        <div class="filter-group" id="cr-kind">
+          <span class="fg-label">类型</span>
+          <button class="fbtn active" data-kind="all">全部</button>
+          <button class="fbtn" data-kind="image">图像</button>
+          <button class="fbtn" data-kind="video">视频</button>
+          <button class="fbtn" data-kind="audio">音乐·音频</button>
+          <button class="fbtn" data-kind="mix">综合</button>
+        </div>
+        <div class="filter-group" id="cr-country">
+          <span class="fg-label">地区</span>
+          <button class="fbtn active" data-country="all">全部</button>
+          <button class="fbtn" data-country="cn">国内</button>
+          <button class="fbtn" data-country="us">海外</button>
+          <button class="fbtn" data-country="open">开源</button>
+        </div>
+        <input type="search" id="cr-search" class="search-input" placeholder="搜索创作工具…" />
+      </div>
+      <div class="agent-grid" id="cr-grid"></div>
     </section>
 
     <!-- 模块八：更新日志 -->
