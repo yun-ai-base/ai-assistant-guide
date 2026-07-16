@@ -11,7 +11,8 @@
     agents: document.getElementById("panel-agents"),
     insights: document.getElementById("panel-insights"),
     toolkit: document.getElementById("panel-toolkit"),
-    extensions: document.getElementById("panel-extensions")
+    extensions: document.getElementById("panel-extensions"),
+    knowledge: document.getElementById("panel-knowledge")
   };
   let currentTab = "overview";
   function switchTab(tab) {
@@ -384,6 +385,76 @@
     agentState.q = e.target.value.trim(); renderAgents();
   });
   renderAgents();
+
+  /* ===================== 模块七：AI 知识库 / PKM ===================== */
+  const kbGrid = document.getElementById("kb-grid");
+  const kbState = { country: "all", kind: "all", q: "" };
+  function kbMatches(k) {
+    if (kbState.country !== "all" && k.country !== kbState.country) return false;
+    if (kbState.kind !== "all" && k.kind !== kbState.kind) return false;
+    if (kbState.q) {
+      const s = (k.name + k.vendor + k.badge + k.summary).toLowerCase();
+      if (!s.includes(kbState.q.toLowerCase())) return false;
+    }
+    return true;
+  }
+  function renderKnowledge() {
+    const list = KNOWLEDGES.filter(kbMatches);
+    const head = `<div class="agent-board-head">AI 知识库 / PKM · 共 ${list.length} 个</div>`;
+    kbGrid.innerHTML = (list.length ? head : "") + (list.length
+      ? list.map(k => `
+        <article class="agent-card">
+          <div class="ac-head">
+            <div>
+              <div class="ac-name">${k.name}</div>
+              <div class="ac-vendor">${k.vendor}</div>
+            </div>
+            <div class="ac-badges">
+              <span class="ac-badge">${k.badge}</span>
+              <span class="kb-kind" data-kind="${k.kind}">${k.kind === "pkm" ? "传统 PKM" : k.kind === "ai-native" ? "AI 原生" : "RAG 平台"}</span>
+            </div>
+          </div>
+          <div class="ac-summary">${k.summary}</div>
+          <button type="button" class="ac-toggle">▾ 展开详情与联动</button>
+          <div class="ac-detail">
+            <h5>核心特点</h5>
+            <ul>${k.features.map(f => `<li>${f}</li>`).join("")}</ul>
+            <h5>适合谁</h5>
+            <div class="ac-extra">${k.forWhom}</div>
+            <h5>与 MCP / RAG 联动</h5>
+            <div class="ac-extra">${k.mcp}</div>
+            <div class="ac-price"><b>价格：</b>${k.price}</div>
+            <div class="ac-note">${k.note}</div>
+          </div>
+          ${k.site ? `<a class="ac-site" href="${k.site}" target="_blank" rel="noopener">🌐 前往官网 →</a>` : ""}
+        </article>`).join("")
+      : `<p style="color:var(--text-dim)">没有匹配的知识库。</p>`);
+
+    kbGrid.querySelectorAll(".agent-card").forEach(card => {
+      card.addEventListener("click", e => {
+        if (e.target.closest("a")) return;
+        card.classList.toggle("open");
+        const t = card.querySelector(".ac-toggle");
+        t.textContent = card.classList.contains("open") ? "▴ 收起" : "▾ 展开详情与联动";
+      });
+    });
+  }
+  document.getElementById("kb-country").addEventListener("click", e => {
+    const b = e.target.closest(".fbtn"); if (!b) return;
+    kbState.country = b.dataset.country;
+    document.getElementById("kb-country").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
+    renderKnowledge();
+  });
+  document.getElementById("kb-kind").addEventListener("click", e => {
+    const b = e.target.closest(".fbtn"); if (!b) return;
+    kbState.kind = b.dataset.kind;
+    document.getElementById("kb-kind").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
+    renderKnowledge();
+  });
+  document.getElementById("kb-search").addEventListener("input", e => {
+    kbState.q = e.target.value.trim(); renderKnowledge();
+  });
+  renderKnowledge();
 
   /* ===================== 模块四：AI 全景洞察 ===================== */
   const insTabsEl = document.getElementById("insight-tabs");
