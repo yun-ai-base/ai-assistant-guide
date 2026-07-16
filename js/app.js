@@ -41,6 +41,171 @@
   }
   window.addEventListener("hashchange", applyHash);
 
+  /* ===================== 全局：搜索 + 对比收藏夹 ===================== */
+  // ---- 对比收藏夹 ----
+  const MAX_COMPARE = 4;
+  const compareList = []; // [{type, id, name, tab}]
+  const compareCountEl = document.getElementById("compare-count");
+  function compareHas(t, id) { return compareList.some(x => x.type === t && x.id === id); }
+  function cmpBtn(type, id, name) {
+    const on = compareHas(type, id);
+    return `<button type="button" class="cmp-add${on ? " on" : ""}" data-cmp-type="${type}" data-cmp-id="${id}" data-cmp-name="${name}" aria-pressed="${on}">${on ? "✓ 已加" : "＋ 对比"}</button>`;
+  }
+  function compareToggle(type, id, name, tab) {
+    const i = compareList.findIndex(x => x.type === type && x.id === id);
+    if (i >= 0) compareList.splice(i, 1);
+    else {
+      if (compareList.length >= MAX_COMPARE) { showToast("对比最多 " + MAX_COMPARE + " 个，先移除一个～"); return; }
+      compareList.push({ type, id, name, tab });
+    }
+    renderCompareCount();
+    syncCmpButtons();
+  }
+  function renderCompareCount() { compareCountEl.textContent = compareList.length; }
+  function syncCmpButtons() {
+    document.querySelectorAll(".cmp-add").forEach(b => {
+      const on = compareHas(b.dataset.cmpType, b.dataset.cmpId);
+      b.classList.toggle("on", on);
+      b.textContent = on ? "✓ 已加" : "＋ 对比";
+      b.setAttribute("aria-pressed", String(on));
+    });
+  }
+  // 对比按钮：事件委托，覆盖所有面板重渲染
+  document.addEventListener("click", e => {
+    const b = e.target.closest(".cmp-add");
+    if (!b) return;
+    e.stopPropagation();
+    const type = b.dataset.cmpType, id = b.dataset.cmpId, name = b.dataset.cmpName || b.textContent;
+    const tabMap = { models: "models", agents: "agents", knowledge: "knowledge" };
+    compareToggle(type, id, name, tabMap[type]);
+  });
+
+  // ---- 对比弹层 ----
+  const compareModal = document.createElement("div");
+  compareModal.className = "compare-modal";
+  compareModal.innerHTML = `<div class="compare-sheet">
+    <div class="compare-head"><h3>⚖ 对比收藏夹（最多 ${MAX_COMPARE} 个）</h3><button type="button" class="compare-close" aria-label="关闭">×</button></div>
+    <div class="compare-grid" id="compare-grid"></div>
+  </div>`;
+  document.body.appendChild(compareModal);
+  compareModal.querySelector(".compare-close").addEventListener("click", () => compareModal.classList.remove("show"));
+  compareModal.addEventListener("click", e => { if (e.target === compareModal) compareModal.classList.remove("show"); });
+  document.getElementById("compare-btn").addEventListener("click", openCompare);
+
+  function getItem(type, id) {
+    if (type === "models") return MODELS.find(x => x.id === id);
+    if (type === "agents") return AGENTS.find(x => x.id === id);
+    if (type === "knowledge") return KNOWLEDGES.find(x => x.id === id);
+    return null;
+  }
+  function compareRows(item, type) {
+    if (type === "models") return [
+      ["厂商", item.vendor], ["类型", item.type === "open" ? "开源" : "闭源"],
+      ["版本", item.version], ["上下文", item.context], ["标签", item.tag],
+      ["优势", item.strengths.join("、")], ["短板", item.weakness.join("、")],
+      ["适用", item.scene], ["价格", item.price]
+    ];
+    if (type === "agents") return [
+      ["厂商", item.vendor], ["难度", item.difficulty], ["简介", item.summary],
+      ["场景", item.scenes.join("、")], ["价格", item.price]
+    ];
+    if (type === "knowledge") return [
+      ["厂商", item.vendor], ["类型", item.kind === "pkm" ? "传统 PKM" : item.kind === "ai-native" ? "AI 原生" : "RAG 平台"],
+      ["简介", item.summary], ["价格", item.price]
+    ];
+    return [];
+  }
+  function openCompare() {
+    const grid = compareModal.querySelector("#compare-grid");
+    if (!compareList.length) {
+      grid.innerHTML = `<div class="cmp-empty">收藏夹还是空的～<br>在模型 / Agent / 知识库卡片右上角点「＋ 对比」加入，最多 ${MAX_COMPARE} 个。</div>`;
+    } else {
+      grid.innerHTML = compareList.map(it => {
+        const item = getItem(it.type, it.id);
+        if (!item) return "";
+        const rows = compareRows(item, it.type).map(r => `<div class="cmp-row"><b>${r[0]}：</b>${r[1]}</div>`).join("");
+        const site = it.type === "models" ? (MODEL_SITES[it.id] || "") : (item.site || "");
+        return `<div class="cmp-card">
+          <h4>${item.name}</h4>
+          <div class="cmp-vendor">${item.vendor}</div>
+          ${rows}
+          <button type="button" class="cmp-remove" data-cmp-type="${it.type}" data-cmp-id="${it.id}">移除</button>
+          ${site ? `<a class="ac-site" href="${site}" target="_blank" rel="noopener" style="margin-top:8px">🌐 前往官网 →</a>` : ""}
+        </div>`;
+      }).join("");
+      grid.querySelectorAll(".cmp-remove").forEach(btn => btn.addEventListener("click", () => {
+        const i = compareList.findIndex(x => x.type === btn.dataset.cmpType && x.id === btn.dataset.cmpId);
+        if (i >= 0) { compareList.splice(i, 1); renderCompareCount(); syncCmpButtons(); openCompare(); }
+      }));
+    }
+    compareModal.classList.add("show");
+  }
+
+  // ---- 全局搜索 ----
+  const searchInput = document.getElementById("global-search");
+  const searchResultsEl = document.getElementById("search-results");
+  const TYPE_LABEL = { models: "模型", agents: "Agent", knowledge: "知识库", concepts: "概念" };
+  const searchIndex = [];
+  MODELS.forEach(m => searchIndex.push({ type: "models", tab: "models", id: m.id, name: m.name, sub: m.vendor, cardId: "card-model-" + m.id, hay: (m.name + " " + m.vendor + " " + m.tag + " " + m.scene).toLowerCase() }));
+  AGENTS.forEach(a => searchIndex.push({ type: "agents", tab: "agents", id: a.id, name: a.name, sub: a.vendor, cardId: "card-agent-" + a.id, hay: (a.name + " " + a.vendor + " " + a.summary + " " + a.scenes.join(" ")).toLowerCase() }));
+  KNOWLEDGES.forEach(k => searchIndex.push({ type: "knowledge", tab: "knowledge", id: k.id, name: k.name, sub: k.vendor, cardId: "card-kb-" + k.id, hay: (k.name + " " + k.vendor + " " + k.badge + " " + k.summary).toLowerCase() }));
+  CONCEPTS.forEach(c => searchIndex.push({ type: "concepts", tab: "concepts", id: c.id, name: c.name, sub: "核心概念", cardId: null, gotoConcept: c.id, hay: (c.name + " " + c.oneLiner + " " + c.def + " " + c.points.join(" ")).toLowerCase() }));
+
+  let srActive = -1;
+  function renderSearch(q) {
+    const hits = searchIndex.filter(x => x.hay.includes(q)).slice(0, 12);
+    srActive = -1;
+    if (!hits.length) { searchResultsEl.innerHTML = `<div class="sr-empty">没找到「${q}」相关结果</div>`; searchResultsEl.classList.add("show"); return; }
+    searchResultsEl.innerHTML = hits.map((h, i) => `
+      <div class="sr-item" data-i="${i}">
+        <span class="sr-type ${h.type}">${TYPE_LABEL[h.type]}</span>
+        <span class="sr-name">${h.name}</span>
+        <span class="sr-sub">${h.sub}</span>
+      </div>`).join("");
+    searchResultsEl.classList.add("show");
+    searchResultsEl.querySelectorAll(".sr-item").forEach(el => {
+      el.addEventListener("click", () => goToSearchResult(hits[+el.dataset.i]));
+    });
+  }
+  function flashCard(el) {
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.classList.remove("search-hit"); void el.offsetWidth; el.classList.add("search-hit");
+      setTimeout(() => el.classList.remove("search-hit"), 1600);
+    });
+  }
+  function goToSearchResult(item) {
+    searchResultsEl.classList.remove("show");
+    searchInput.value = "";
+    if (item.gotoConcept) {
+      switchTab("concepts");
+      activeConcept = item.gotoConcept; renderConcept();
+      return;
+    }
+    switchTab(item.tab);
+    const el = document.getElementById(item.cardId);
+    if (el) flashCard(el);
+  }
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) { searchResultsEl.classList.remove("show"); searchResultsEl.innerHTML = ""; return; }
+    renderSearch(q);
+  });
+  searchInput.addEventListener("keydown", e => {
+    const items = [...searchResultsEl.querySelectorAll(".sr-item")];
+    if (e.key === "ArrowDown") { e.preventDefault(); srActive = Math.min(srActive + 1, items.length - 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); srActive = Math.max(srActive - 1, 0); }
+    else if (e.key === "Enter") {
+      if (srActive >= 0 && items[srActive]) { const hits = searchIndex.filter(x => x.hay.includes(searchInput.value.trim().toLowerCase())); goToSearchResult(hits[+items[srActive].dataset.i]); }
+      return;
+    } else if (e.key === "Escape") { searchResultsEl.classList.remove("show"); searchInput.blur(); return; }
+    items.forEach((el, i) => el.classList.toggle("active", i === srActive));
+    if (items[srActive]) items[srActive].scrollIntoView({ block: "nearest" });
+  });
+  document.addEventListener("click", e => {
+    if (!e.target.closest(".search-wrap")) searchResultsEl.classList.remove("show");
+  });
+
   /* ===================== 模块一：模型 ===================== */
   const grid = document.getElementById("model-grid");
   const state = { country: "all", type: "all", q: "" };
@@ -77,12 +242,12 @@
       ? list.map(m => {
         const site = MODEL_SITES[m.id] || "#";
         return `
-        <article class="model-card ${m.country === "cn" ? "cn-click" : ""}">
+        <article class="model-card ${m.country === "cn" ? "cn-click" : ""}" id="card-model-${m.id}">
           ${m.country === "cn" ? `<a class="mc-stretch" href="${site}" target="_blank" rel="noopener" aria-label="前往 ${m.name} 官网"></a>` : ""}
-          <span class="flag ${m.country}">${m.country === "us" ? "🇺🇸 美国" : "🇨🇳 中国"}</span>
+          ${cmpBtn("models", m.id, m.name)}
           <div class="mc-head">
             <div>
-              <div class="mc-name">${m.name}</div>
+              <div class="mc-name">${m.name} <span class="flag ${m.country}">${m.country === "us" ? "🇺🇸 美国" : "🇨🇳 中国"}</span></div>
               <div class="mc-vendor">${m.vendor} · ${m.type === "closed" ? "闭源" : "开源"}</div>
             </div>
           </div>
@@ -346,7 +511,8 @@
     const head = `<div class="agent-board-head">${REGION_LABELS[agentState.region] || ""} · 共 ${list.length} 个</div>`;
     agentGrid.innerHTML = (list.length ? head : "") + (list.length
       ? list.map(a => `
-        <article class="agent-card">
+        <article class="agent-card" id="card-agent-${a.id}">
+          ${cmpBtn("agents", a.id, a.name)}
           <div class="ac-head">
             <div>
               <div class="ac-name">${a.name}</div>
@@ -380,7 +546,7 @@
 
     agentGrid.querySelectorAll(".agent-card").forEach(card => {
       card.addEventListener("click", e => {
-        if (e.target.closest("a")) return; // 点官网链接不触发展开
+        if (e.target.closest("a") || e.target.closest(".cmp-add")) return; // 点官网链接 / 对比按钮不触发展开
         card.classList.toggle("open");
         const t = card.querySelector(".ac-toggle");
         t.textContent = card.classList.contains("open") ? "▴ 收起" : "▾ 展开使用技巧与场景";
@@ -417,7 +583,8 @@
     const head = `<div class="agent-board-head">AI 知识库 / PKM · 共 ${list.length} 个</div>`;
     kbGrid.innerHTML = (list.length ? head : "") + (list.length
       ? list.map(k => `
-        <article class="agent-card${k.hot ? " hot" : ""}">
+        <article class="agent-card${k.hot ? " hot" : ""}" id="card-kb-${k.id}">
+          ${cmpBtn("knowledge", k.id, k.name)}
           <div class="ac-head">
             <div>
               <div class="ac-name">${k.name}</div>
@@ -447,7 +614,7 @@
 
     kbGrid.querySelectorAll(".agent-card").forEach(card => {
       card.addEventListener("click", e => {
-        if (e.target.closest("a")) return;
+        if (e.target.closest("a") || e.target.closest(".cmp-add")) return;
         card.classList.toggle("open");
         const t = card.querySelector(".ac-toggle");
         t.textContent = card.classList.contains("open") ? "▴ 收起" : "▾ 展开详情与联动";
