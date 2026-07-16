@@ -443,20 +443,20 @@
   }
   document.getElementById("kb-country").addEventListener("click", e => {
     const b = e.target.closest(".fbtn"); if (!b) return;
+    if (b.dataset.hot) {
+      kbState.hot = (kbState.hot === "1") ? "all" : "1";
+      b.classList.toggle("active", kbState.hot === "1");
+      renderKnowledge();
+      return;
+    }
     kbState.country = b.dataset.country;
-    document.getElementById("kb-country").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
+    document.getElementById("kb-country").querySelectorAll("[data-country]").forEach(x => x.classList.toggle("active", x.dataset.country === kbState.country));
     renderKnowledge();
   });
   document.getElementById("kb-kind").addEventListener("click", e => {
     const b = e.target.closest(".fbtn"); if (!b) return;
     kbState.kind = b.dataset.kind;
     document.getElementById("kb-kind").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
-    renderKnowledge();
-  });
-  document.getElementById("kb-hot").addEventListener("click", e => {
-    const b = e.target.closest(".fbtn"); if (!b) return;
-    kbState.hot = b.dataset.hot;
-    document.getElementById("kb-hot").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
     renderKnowledge();
   });
   document.getElementById("kb-search").addEventListener("input", e => {
