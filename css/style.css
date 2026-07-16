@@ -232,10 +232,10 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .kb-kind[data-kind="pkm"] { background: rgba(56,138,221,.15); color: #378ADD; border-color: rgba(56,138,221,.4); }
   .kb-kind[data-kind="ai-native"] { background: rgba(167,139,250,.15); color: var(--accent2); border-color: rgba(167,139,250,.4); }
   .kb-kind[data-kind="rag"] { background: rgba(29,158,117,.15); color: #1D9E75; border-color: rgba(29,158,117,.4); }
-  /* 热门/出名产品：暖金底色，与冷色类型 chip 区分 */
-  .agent-card.hot { background: linear-gradient(160deg, rgba(255,193,94,.15), rgba(255,152,0,.05)); border-color: rgba(255,176,64,.45); }
-  .agent-card.hot:hover { border-color: rgba(255,176,64,.72); box-shadow: 0 6px 22px rgba(255,176,64,.14); transform: translateY(-3px); }
-  .kb-hot { font-size: 10.5px; padding: 3px 9px; border-radius: 999px; white-space: nowrap; background: linear-gradient(135deg, #ffb347, #ff8c42); color: #2a1500; font-weight: 700; border: 1px solid rgba(255,176,64,.5); }
+  /* 热门/出名产品：暖金底色，与冷色类型 chip 强区分 */
+  .agent-card.hot { background: linear-gradient(160deg, rgba(255,179,71,.30), rgba(255,138,0,.11)); border-color: rgba(255,176,64,.75); box-shadow: 0 0 0 1px rgba(255,176,64,.30), 0 6px 22px rgba(255,150,30,.20); }
+  .agent-card.hot:hover { border-color: #ffc15e; box-shadow: 0 0 0 1px rgba(255,193,94,.55), 0 8px 28px rgba(255,150,30,.30); transform: translateY(-3px); }
+  .kb-hot { font-size: 11px; padding: 3px 10px; border-radius: 999px; white-space: nowrap; background: linear-gradient(135deg, #ffc15e, #ff8c42); color: #2a1500; font-weight: 800; border: 1px solid rgba(255,200,120,.75); box-shadow: 0 2px 9px rgba(255,150,30,.35); }
 
 /* Footer */
 .site-footer { text-align: center; color: var(--text-faint); font-size: 12.5px; padding: 24px; border-top: 1px solid var(--border); margin-top: 30px; }
