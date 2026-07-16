@@ -12,7 +12,8 @@
     insights: document.getElementById("panel-insights"),
     toolkit: document.getElementById("panel-toolkit"),
     extensions: document.getElementById("panel-extensions"),
-    knowledge: document.getElementById("panel-knowledge")
+    knowledge: document.getElementById("panel-knowledge"),
+    changelog: document.getElementById("panel-changelog")
   };
   let currentTab = "overview";
   function switchTab(tab) {
@@ -198,13 +199,25 @@
     return head + tail;
   }
 
+  function conceptIcon(id) {
+    const I = {
+      prompt: '<path d="M4 5h16v11H9l-4 4V5z"/><path d="M8 9h8M8 12h5"/>',
+      skill: '<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>',
+      agent: '<rect x="5" y="8" width="14" height="10" rx="3"/><path d="M9 12h.01M15 12h.01"/><path d="M12 4v4"/>',
+      mcp: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 7.5l3 8M16.5 7.5l-3 8"/>',
+      token: '<rect x="4" y="10" width="16" height="9" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/>'
+    };
+    const p = I[id] || I.prompt;
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+  }
   function renderConcept() {
     const c = CONCEPTS.find(x => x.id === activeConcept);
     tabsEl.querySelectorAll(".ctab").forEach(b => b.classList.toggle("active", b.dataset.id === activeConcept));
     bodyEl.innerHTML = `
       <div class="cb-grid">
         <div>
-          <div class="cb-title">${c.icon} ${c.name}</div>
+          <div class="cb-icon">${conceptIcon(c.id)}</div>
+          <div class="cb-title">${c.name}</div>
           <div class="cb-oneliner">${c.oneLiner}</div>
           <div class="cb-def">${c.def}</div>
           <div class="cb-block"><h4>📌 关键要点</h4>
@@ -517,7 +530,8 @@
     bodyEl.innerHTML = `
       <div class="cb-grid">
         <div>
-          <div class="cb-title">${c.icon} ${c.name}</div>
+          <div class="cb-icon">${conceptIcon(c.id)}</div>
+          <div class="cb-title">${c.name}</div>
           <div class="cb-oneliner">${c.oneLiner}</div>
           <div class="cb-def">${c.def}</div>
           ${secHtml}
@@ -770,5 +784,81 @@
 
   // 启动时按 URL hash 定位分区（支持分享链接 #models / #concepts / #agents / #insights）
   applyHash();
+
+  /* ===================== 全局体验增强（v2） ===================== */
+  // 1) 数据来源标注：每个带 sec-head 的面板加"内容基准"小字
+  document.querySelectorAll(".sec-head").forEach(h => {
+    const n = document.createElement("div");
+    n.className = "data-note";
+    n.textContent = "内容基准 2026-07 · 综合公开资料整理，仅供参考，以官方为准";
+    h.appendChild(n);
+  });
+
+  // 2) 深浅色切换（跟随系统 + 记忆）
+  const themeBtn = document.getElementById("theme-toggle");
+  const savedTheme = localStorage.getItem("theme");
+  const sysDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const initTheme = savedTheme || (sysDark ? "dark" : "light");
+  document.documentElement.dataset.theme = initTheme;
+  themeBtn.textContent = initTheme === "dark" ? "☀ 浅色" : "🌙 深色";
+  themeBtn.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("theme", next);
+    themeBtn.textContent = next === "dark" ? "☀ 浅色" : "🌙 深色";
+  });
+
+  // 3) 阅读进度条 + 返回顶部
+  const progress = document.getElementById("progress");
+  const toTop = document.getElementById("to-top");
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = h > 0 ? (window.scrollY / h) * 100 : 0;
+    progress.style.width = p + "%";
+    toTop.classList.toggle("show", window.scrollY > 400);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+  toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+  // 4) 键盘快捷键：数字键 1-9 切模块
+  const tabOrder = ["overview","models","concepts","agents","insights","toolkit","extensions","knowledge","changelog"];
+  let toastTimer;
+  function showToast(msg) {
+    let el = document.querySelector(".toast");
+    if (!el) { el = document.createElement("div"); el.className = "toast"; document.body.appendChild(el); }
+    el.textContent = msg; el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 1200);
+  }
+  window.addEventListener("keydown", e => {
+    if (e.target.matches && e.target.matches("input, textarea, select")) return;
+    const idx = parseInt(e.key, 10);
+    if (idx >= 1 && idx <= tabOrder.length) {
+      const t = tabOrder[idx - 1];
+      switchTab(t);
+      const tip = document.querySelector('.navbtn[data-tab="' + t + '"]');
+      showToast("切换到：" + (tip ? tip.textContent.trim() : t));
+    }
+  });
+
+  // 5) 更新日志
+  function renderChangelog() {
+    const log = [
+      { date: "2026-07-16", title: "v2 · 质感升级", desc: "新增深浅色切换（跟随系统 + 记忆）、阅读进度条、返回顶部、键盘快捷键（数字 1-9 切模块）、更新日志、概念线性图标、数据来源标注。" },
+      { date: "2026-07-16", title: "v1.2 · AI 知识库模块", desc: "新增第⑦模块「AI 知识库 / PKM」：20 个产品（语雀 / 飞书 / IMA / Obsidian / Notion / Dify 等），含国内·海外·AI 原生·RAG 平台分类、热门筛选与暖金底色。" },
+      { date: "2026-07-15", title: "v1.1 · 移动端与交互打磨", desc: "移动端导航横向滚动、卡片展开动画、成本计算器与模型卡价格对齐、性格拟人卡补全至 12/12。" },
+      { date: "2026-07-15", title: "v1.0 · 核心六层", desc: "概览 + 中美模型(12) + 核心概念(5) + 流行 Agent(15) + 全景洞察(4) + 工具箱(5) + 进阶延展(11)，并部署至 GitHub Pages。" }
+    ];
+    const el = document.getElementById("changelog-body");
+    if (!el) return;
+    el.innerHTML = log.map(x => `
+      <div class="cl-item">
+        <div class="cl-date">${x.date}</div>
+        <div class="cl-title">${x.title}</div>
+        <div class="cl-desc">${x.desc}</div>
+      </div>`).join("");
+  }
+  renderChangelog();
 
 })();
