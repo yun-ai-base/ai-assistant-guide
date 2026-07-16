@@ -31,8 +31,12 @@
       <button class="navbtn" data-tab="toolkit">⑤ 工具箱</button>
       <button class="navbtn" data-tab="extensions">⑥ 进阶延展</button>
       <button class="navbtn" data-tab="knowledge">⑦ AI 知识库</button>
+      <button class="navbtn" data-tab="changelog">⑧ 更新日志</button>
     </nav>
+    <button id="theme-toggle" class="icon-btn" title="切换深色 / 浅色">🌙 深色</button>
   </header>
+
+  <div class="progress-bar" id="progress"></div>
 
   <main>
     <!-- 概览 -->
@@ -187,11 +191,22 @@
       </div>
       <div class="agent-grid" id="kb-grid"></div>
     </section>
+
+    <!-- 模块八：更新日志 -->
+    <section class="panel" id="panel-changelog">
+      <div class="sec-head">
+        <h2>⑧ 更新日志</h2>
+        <p>这个站点是怎么一步步长出来的——每次迭代都记在这里，方便你追溯内容演进。</p>
+      </div>
+      <div class="changelog" id="changelog-body"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
     <p>AI 使用智能助理 · 学习向导 — 教学科普用途 · 内容基准 2026-07 · 实际以官方文档为准</p>
   </footer>
+
+  <button class="to-top" id="to-top" aria-label="返回顶部">↑</button>
 
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
