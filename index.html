@@ -33,7 +33,14 @@
       <button class="navbtn" data-tab="knowledge">⑦ AI 知识库</button>
       <button class="navbtn" data-tab="changelog">⑧ 更新日志</button>
     </nav>
-    <button id="theme-toggle" class="icon-btn" title="切换深色 / 浅色">🌙 深色</button>
+    <div class="header-tools">
+      <div class="search-wrap">
+        <input type="search" id="global-search" class="global-search" placeholder="搜索模型 / Agent / 概念 / 知识库…" aria-label="全局搜索" />
+        <div class="search-results" id="search-results"></div>
+      </div>
+      <button id="compare-btn" class="icon-btn" title="对比收藏夹">⚖ 对比<span id="compare-count">0</span></button>
+      <button id="theme-toggle" class="icon-btn" title="切换深色 / 浅色">🌙 深色</button>
+    </div>
   </header>
 
   <div class="progress-bar" id="progress"></div>
