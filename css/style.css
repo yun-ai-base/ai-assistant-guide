@@ -541,3 +541,34 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
   .ac-head { padding-right: 72px; }
   .cmp-add { font-size: 11px; padding: 3px 7px; }
 }
+
+/* ===== 避坑指南（PITFALLS） ===== */
+.pf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+.pf-card { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.pf-card.level-高危 { border-left-color: #e5484d; }
+.pf-card.level-中危 { border-left-color: #fbbf24; }
+.pf-card.level-低危 { border-left-color: #4cc2ff; }
+.pf-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.pf-emoji { font-size: 26px; line-height: 1; }
+.pf-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.pf-tags { display: flex; gap: 6px; margin-top: 4px; }
+.pf-cat { font-size: 11px; background: var(--bg-soft); color: var(--text-dim); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; }
+.pf-level { font-size: 11px; border-radius: 999px; padding: 1px 8px; font-weight: 600; }
+.pf-card.level-高危 .pf-level { background: rgba(229,72,77,.18); color: #ff8589; }
+.pf-card.level-中危 .pf-level { background: rgba(251,191,36,.16); color: #fbbf24; }
+.pf-card.level-低危 .pf-level { background: rgba(76,194,255,.16); color: #7cd0ff; }
+.pf-block { font-size: 13px; color: var(--text-dim); margin: 8px 0; line-height: 1.7; }
+.pf-block b { color: var(--text); font-weight: 600; }
+.pf-block.fix { color: #cfe9d4; background: rgba(52,211,153,.10); border-radius: 8px; padding: 8px 10px; }
+.pf-block.fix b { color: #6ee7a8; }
+.pf-motto { font-size: 13px; color: var(--accent); margin-top: 10px; font-weight: 600; }
+
+/* 多模态创作：modality chip 配色 */
+.kb-kind[data-kind="image"] { background: rgba(76,194,255,.16); color: #7cd0ff; border-color: rgba(76,194,255,.4); }
+.kb-kind[data-kind="video"] { background: rgba(167,139,250,.16); color: #c4b5fd; border-color: rgba(167,139,250,.4); }
+.kb-kind[data-kind="audio"] { background: rgba(52,211,153,.16); color: #6ee7a8; border-color: rgba(52,211,153,.4); }
+.kb-kind[data-kind="mix"] { background: rgba(251,191,36,.16); color: #fbbf24; border-color: rgba(251,191,36,.4); }
+
+@media (max-width: 600px) {
+  .pf-grid { grid-template-columns: 1fr; }
+}
