@@ -449,14 +449,14 @@
       renderKnowledge();
       return;
     }
-    kbState.country = b.dataset.country;
+    kbState.country = (b.dataset.country === kbState.country) ? "all" : b.dataset.country;
     document.getElementById("kb-country").querySelectorAll("[data-country]").forEach(x => x.classList.toggle("active", x.dataset.country === kbState.country));
     renderKnowledge();
   });
   document.getElementById("kb-kind").addEventListener("click", e => {
     const b = e.target.closest(".fbtn"); if (!b) return;
-    kbState.kind = b.dataset.kind;
-    document.getElementById("kb-kind").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x === b));
+    kbState.kind = (b.dataset.kind === kbState.kind) ? "all" : b.dataset.kind;
+    document.getElementById("kb-kind").querySelectorAll(".fbtn").forEach(x => x.classList.toggle("active", x.dataset.kind === kbState.kind));
     renderKnowledge();
   });
   document.getElementById("kb-search").addEventListener("input", e => {
