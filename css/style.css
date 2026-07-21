@@ -572,3 +572,23 @@ main { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
 @media (max-width: 600px) {
   .pf-grid { grid-template-columns: 1fr; }
 }
+
+/* ===================== Agent 推荐书籍卡片 ===================== */
+.book-card {
+  display: flex; align-items: center; gap: 18px;
+  background: linear-gradient(135deg, rgba(255,179,71,.12), rgba(255,138,0,.06));
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px;
+  margin-top: 20px; transition: .2s;
+}
+.book-card:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: var(--shadow); }
+.book-icon { font-size: 36px; flex-shrink: 0; }
+.book-info h3 { margin: 0 0 4px; font-size: 17px; }
+.book-info .book-ver { font-weight: 400; font-size: 13px; color: var(--text-dim); }
+.book-info p { margin: 0 0 10px; font-size: 13.5px; color: var(--text-dim); }
+.book-btn {
+  display: inline-block; padding: 8px 18px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #06121f; font-weight: 700; font-size: 13.5px; text-decoration: none;
+  transition: .2s;
+}
+.book-btn:hover { opacity: .85; transform: scale(1.02); }
