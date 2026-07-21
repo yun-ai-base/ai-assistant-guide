@@ -1,0 +1,86 @@
+name: 🤖 Model Data Tracker
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    inputs:
+      create_pr:
+        description: 'Auto-create PR when changes detected'
+        type: boolean
+        default: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run model version check
+        id: check
+        run: python scripts/model-tracker.py
+        continue-on-error: true
+
+      - name: Upload tracker report
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-tracker-report
+          path: model-tracker-report.md
+
+      - name: Create Issue if changes detected
+        if: steps.check.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('model-tracker-report.md', 'utf8');
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'model-update'
+            });
+            const existing = issues.data.find(i =>
+              i.title.includes('Model Update')
+            );
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `## 🔄 Re-check: ${new Date().toISOString()}\n\n${report}`
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🤖 Model Update Detected',
+                body: report,
+                labels: ['model-update']
+              });
+            }
+
+      - name: Auto-create PR (if enabled)
+        if: steps.check.outputs.changed == 'true' && github.event.inputs.create_pr == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "Model Tracker Bot"
+          git config user.email "bot@yun-ai-base.github.io"
+          git checkout -b auto/model-update-$(date +%Y%m%d)
+          git add js/data.js
+          git commit -m "chore: auto-update model data" || true
+          git push origin auto/model-update-$(date +%Y%m%d) --force
+          gh pr create \
+            --title "🤖 Auto-update model data" \
+            --body "Automated model data update detected by Model Tracker." \
+            --label model-update
