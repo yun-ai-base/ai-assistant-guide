@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI 使用智能助理 · 学习向导</title>
   <meta name="description" content="AI 使用智能助理学习向导：中美主流 AI 模型对比、核心概念（Prompt/Skill/Agent/MCP/Token）图文互动、流行 AI Agent 使用技巧与场景，一站读懂 AI Agent 生态。" />
+  <meta name="keywords" content="AI模型,GPT,Claude,Gemini,DeepSeek,通义千问,豆包,GLM,Kimi,AI Agent,Prompt,Skill,MCP,Token,AI教程,智能助理" />
   <meta property="og:title" content="AI 使用智能助理 · 学习向导" />
   <meta property="og:description" content="中美主流 AI 模型 · 核心概念图文互动 · 流行 AI Agent 使用技巧与场景，一站读懂 AI Agent 生态。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://yun-ai-base.github.io/ai-assistant-guide/" />
+  <meta name="robots" content="index, follow" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧭%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -88,7 +90,7 @@
     <section class="panel" id="panel-models">
       <div class="sec-head">
         <h2>① 中美主流 AI 模型</h2>
-        <p>数据基准：2026 年中。版本与价格随厂商迭代变化，选型以官方最新文档为准。</p>
+        <p>版本与价格随厂商迭代变化，选型以官方最新文档为准。 <span class="fresh-badge" id="fresh-badge">⟳ 数据基准 2026-07</span></p>
       </div>
       <div class="filters">
         <div class="filter-group" id="model-country">
@@ -143,14 +145,7 @@
         <input type="search" id="agent-search" class="search-input" placeholder="搜索 Agent…" />
       </div>
       <div class="agent-grid" id="agent-grid"></div>
-      <div class="book-card">
-        <div class="book-icon">📘</div>
-        <div class="book-info">
-          <h3>深入理解 AI Agent <span class="book-ver">李博杰 v1.2</span></h3>
-          <p>AI Agent 深度中文书籍，系统讲解 Agent 原理、架构与实践。</p>
-          <a href="books/AI-Agents-in-Depth-zh-CN.pdf" class="book-btn" download>📥 下载 PDF（13MB）</a>
-        </div>
-      </div>
+      <div id="book-card-container"></div>
     </section>
 
     <!-- 模块四：AI 全景洞察 -->

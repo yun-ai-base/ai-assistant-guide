@@ -180,6 +180,8 @@
   CREATIVES.forEach(c => searchIndex.push({ type: "creative", tab: "creative", id: c.id, name: c.name, sub: c.vendor, cardId: "card-cr-" + c.id, hay: (c.name + " " + c.vendor + " " + c.badge + " " + c.summary).toLowerCase() }));
   PITFALLS.forEach(p => searchIndex.push({ type: "pitfalls", tab: "pitfalls", id: p.id, name: p.title, sub: p.cat, cardId: "card-pf-" + p.id, hay: (p.title + " " + p.cat + " " + p.scene + " " + p.what + " " + p.fix).toLowerCase() }));
   CONCEPTS.forEach(c => searchIndex.push({ type: "concepts", tab: "concepts", id: c.id, name: c.name, sub: "核心概念", cardId: null, gotoConcept: c.id, hay: (c.name + " " + c.oneLiner + " " + c.def + " " + c.points.join(" ")).toLowerCase() }));
+  // 书籍 PDF
+  searchIndex.push({ type: "agents", tab: "agents", id: "book", name: "深入理解 AI Agent", sub: "李博杰 v1.2", cardId: null, hay: "深入理解 ai agent 李博杰 书籍 pdf agent 原理 架构 实践 下载".toLowerCase() });
 
   let srActive = -1;
   // 安全：转义用户输入，避免把搜索词直接当 HTML 注入（XSS）
@@ -583,6 +585,17 @@
           ${a.site ? `<a class="ac-site" href="${a.site}" target="_blank" rel="noopener">🌐 前往官网 →</a>` : ""}
         </article>`).join("")
       : `<p style="color:var(--text-dim)">没有匹配的 Agent。</p>`);
+
+    // 渲染书籍下载卡片（在所有 Agent 面板都显示）
+    document.getElementById("book-card-container").innerHTML = `
+      <div class="book-card">
+        <div class="book-icon">📘</div>
+        <div class="book-info">
+          <h3>深入理解 AI Agent <span class="book-ver">李博杰 v1.2</span></h3>
+          <p>AI Agent 深度中文书籍，系统讲解 Agent 原理、架构与实践。</p>
+          <a href="books/AI-Agents-in-Depth-zh-CN.pdf" class="book-btn" download>📥 下载 PDF（13MB）</a>
+        </div>
+      </div>`;
 
     agentGrid.querySelectorAll(".agent-card").forEach(card => {
       card.addEventListener("click", e => {
@@ -1105,7 +1118,14 @@
   // 懒渲染：由 ensureRendered("creative") 首次触发
 
   /* ===================== 全局体验增强（v2） ===================== */
-  // 1) 数据来源标注：每个带 sec-head 的面板加"内容基准"小字
+  // 1) 数据来源标注：从 data.js 注释读取时间，避免硬编码
+  fetch("js/data.js").then(r => r.text()).then(txt => {
+    const m = txt.match(/数据时间基准[：:]\s*([^\s<]+)/);
+    const ts = m ? m[1] : "2026-07";
+    document.querySelectorAll(".data-note").forEach(el => {
+      el.textContent = "内容基准 " + ts + " · 综合公开资料整理，仅供参考，以官方为准";
+    });
+  }).catch(() => {});
   document.querySelectorAll(".sec-head").forEach(h => {
     const n = document.createElement("div");
     n.className = "data-note";
@@ -1158,6 +1178,10 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove("show"), 1200);
   }
+  // 快捷键提示条（首次访问时显示一次）
+  if (!sessionStorage.getItem("shortcutHint")) {
+    setTimeout(() => { showToast("⌨ 按数字 1-9 快速切换模块"); sessionStorage.setItem("shortcutHint", "1"); }, 3000);
+  }
   window.addEventListener("keydown", e => {
     if (e.target.matches && e.target.matches("input, textarea, select")) return;
     const idx = parseInt(e.key, 10);
@@ -1172,6 +1196,8 @@
   // 5) 更新日志
   function renderChangelog() {
     const log = [
+      { date: "2026-07-21", title: "v2.3 · 模型数据更新 + 项目改进", desc: "Kimi K3（2026-07-17 发布，2.8 万亿参数开源）数据更新。修复数据推送损坏问题。新增 404 页面、SEO meta 标签、搜索可搜到书籍 PDF、快捷键提示条（首次访问显示）。书籍卡片改为 JS 动态渲染，不再随 Agent 筛选脱节。" },
+      { date: "2026-07-21", title: "v2.2 · Agent 书籍 + 自动化模型跟踪", desc: "新增《深入理解 AI Agent》书籍 PDF 下载卡片（李博杰 v1.2）。新增 GitHub Actions 自动化工作流：每周一自动检查各厂商模型版本变化，发现变化开 Issue 通知。模型更新至 2026-07 最新：GPT-5.6 Sol/Terra/Luna（7/9 上线）、Claude Opus 4.8/Sonnet 5/Fable 5、DeepSeek V4 Pro/Flash 正式版+峰谷计价。" },
       { date: "2026-07-16", title: "v2.1 · 避坑 + 多模态", desc: "新增 🛡 避坑指南（8 个真实风险：幻觉 / 隐私 / 过度授权 / 订阅陷阱等，附正确做法与口诀）与 🎨 多模态创作（12 个图像 / 视频 / 音乐工具：Midjourney / 可灵 / Suno / HeyGen 等，按类型与地区筛选、可加入对比）。全局搜索同步覆盖创作与避坑。" },
       { date: "2026-07-16", title: "v2 · 质感升级", desc: "新增深浅色切换（跟随系统 + 记忆）、阅读进度条、返回顶部、键盘快捷键（数字 1-9 切模块）、更新日志、概念线性图标、数据来源标注。" },
       { date: "2026-07-16", title: "v1.2 · AI 知识库模块", desc: "新增第⑦模块「AI 知识库 / PKM」：20 个产品（语雀 / 飞书 / IMA / Obsidian / Notion / Dify 等），含国内·海外·AI 原生·RAG 平台分类、热门筛选与暖金底色。" },
